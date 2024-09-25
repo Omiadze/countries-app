@@ -1,6 +1,6 @@
-import CardContent from "./card-content/card-content";
-import CardHeader from "./card-header/card-header";
-import CardImg from "./card-image/card-image";
+import CardContent from "./card/card-content/card-content";
+import CardHeader from "./card/card-header/card-header";
+import CardImg from "./card/card-image/card-image";
 import styles from "./card.module.css";
 
 type Country = {
