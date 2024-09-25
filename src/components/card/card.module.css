@@ -1,0 +1,24 @@
+.cards-container {
+  padding: 5%;
+}
+.card-div {
+  width: 25%;
+  border: 2px solid #ebf2fa;
+  padding: 2%;
+  border-radius: 20px;
+}
+.card-div:hover {
+  background-color: #ebf2fa;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .card-div {
+    width: 30%;
+  }
+}
+@media screen and (max-width: 767px) {
+  .card-div {
+    width: 40%;
+  }
+}

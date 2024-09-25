@@ -1,0 +1,18 @@
+.cards-container {
+  padding: 5%;
+}
+.card-div {
+  width: 25%;
+  border: 2px solid #ebf2fa;
+  padding: 2%;
+  border-radius: 20px;
+}
+.card-div:hover {
+  background-color: #ebf2fa;
+  cursor: pointer;
+}
+
+.card-content {
+  text-align: left;
+  margin-bottom: 20px;
+}
