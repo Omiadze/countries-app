@@ -13,7 +13,7 @@ const Header: React.FC = () => {
       </div>
       <div className={styles["nav-lists"]}>
         {nav.map((item) => (
-          <a>{item}</a>
+          <a key={item}>{item}</a>
         ))}
       </div>
     </div>
