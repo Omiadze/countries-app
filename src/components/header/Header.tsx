@@ -3,7 +3,7 @@ import logo from "../assets/logo.png";
 import styles from "./header.module.css";
 
 const Header: React.FC = () => {
-  const nav = ["Home", "Favorites", "contact"];
+  const nav: Array<string> = ["Home", "Favorites", "contact"];
   return (
     <div className={styles.header}>
       <div className={styles.logo}>

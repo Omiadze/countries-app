@@ -66,5 +66,15 @@
 @media (min-width: 768px) and (max-width: 1024px) {
   .banner-content {
     width: 60%;
+    font-size: x-small;
+  }
+}
+@media screen and (max-width: 767px) {
+  .banner-content {
+    font-size: xx-small;
+  }
+  .btn-find {
+    width: 100px;
+    padding: 5px 10px;
   }
 }
