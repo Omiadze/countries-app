@@ -1,14 +1,15 @@
 import "./App.css";
-import Header from "./components/header/Header";
-import Banner from "./components/banner/Banner";
-import Card from "./components/card/Card";
+import { Banner } from "@components/banner";
+import { Card } from "@components/card";
+import { Layout } from "@components/layout";
 
 function App() {
   return (
     <>
-      <Header />
-      <Banner />
-      <Card />
+      <Layout>
+        <Banner />
+        <Card />
+      </Layout>
     </>
   );
 }

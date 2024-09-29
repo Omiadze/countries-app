@@ -1,7 +1,8 @@
-import banner from "../assets/banner.jpg";
-import styles from "./banner.module.css";
+import React from "react";
+import banner from "@components/assets/banner.jpg";
+import styles from "@components/banner/banner.module.css";
 
-const Banner = () => {
+export const Banner: React.FC = () => {
   return (
     <div>
       <div className={styles["banner-div"]}>
@@ -19,5 +20,3 @@ const Banner = () => {
     </div>
   );
 };
-
-export default Banner;

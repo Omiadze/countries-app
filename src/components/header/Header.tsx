@@ -1,9 +1,9 @@
 import React from "react";
-import logo from "../assets/logo.png";
-import styles from "./header.module.css";
+import logo from "@/components/assets/logo.png";
+import styles from "@components/header/header.module.css";
 
-const Header: React.FC = () => {
-  const nav: Array<string> = ["Home", "Favorites", "contact"];
+export const Header: React.FC = () => {
+  const nav: string[] = ["Home", "Favorites", "contact"];
   return (
     <div className={styles.header}>
       <div className={styles.logo}>
@@ -20,5 +20,3 @@ const Header: React.FC = () => {
     </div>
   );
 };
-
-export default Header;

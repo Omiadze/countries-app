@@ -1,7 +1,7 @@
 import { useState } from "react";
-import styles from "./card-header.module.css";
+import styles from "@components/card/header/header.module.css";
 
-const CardHeader = () => {
+export const CardHeader = () => {
   const [favItem, setFavItem] = useState("white");
   const handleHeardClick = () => {
     if (favItem === "white") {
@@ -35,5 +35,3 @@ const CardHeader = () => {
     </div>
   );
 };
-
-export default CardHeader;
