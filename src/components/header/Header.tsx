@@ -1,9 +1,10 @@
 import React from "react";
-import logo from "@/components/assets/logo.png";
+import logo from "@components/assets/logo.png";
 import styles from "@components/header/header.module.css";
+import { NavLink } from "react-router-dom";
 
 export const Header: React.FC = () => {
-  const nav: string[] = ["Home", "Favorites", "contact"];
+  const nav: string[] = ["Home", "About", "Favorites", "contact"];
   return (
     <div className={styles.header}>
       <div className={styles.logo}>
@@ -14,7 +15,13 @@ export const Header: React.FC = () => {
       </div>
       <div className={styles["nav-lists"]}>
         {nav.map((item) => (
-          <a key={item}>{item}</a>
+          <NavLink
+            key={item}
+            to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+            className={({ isActive }) => (isActive ? styles.active : undefined)}
+          >
+            {item}
+          </NavLink>
         ))}
       </div>
     </div>

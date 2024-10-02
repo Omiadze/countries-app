@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "@components/card/image/image.module.css";
+import styles from "@/pages/home/components/card/image/image.module.css";
 type CardImgProps = {
   img: string;
   name: string;

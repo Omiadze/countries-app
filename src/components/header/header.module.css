@@ -38,9 +38,16 @@
   margin-bottom: 0.5em;
   font-weight: bold;
 }
+.nav-lists a {
+  text-decoration: none;
+  color: black;
+}
 .nav-lists a:hover {
-  color: var(--green);
   cursor: pointer;
+}
+/* style for active page */
+.nav-lists a.active {
+  color: var(--green);
 }
 @media screen and (max-width: 767px) {
   .logo img {

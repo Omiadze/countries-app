@@ -9,7 +9,7 @@ export default defineConfig(() => {
   const componentsPath = `${srcPath}/components`;
 
   return {
-    // base: "/./",
+    base: "/countries-app/",
     plugins: [react()],
     resolve: {
       alias: {

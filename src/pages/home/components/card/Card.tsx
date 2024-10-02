@@ -1,8 +1,8 @@
 import React from "react";
-import { CardContent } from "@components/card/content";
-import { CardHeader } from "@components/card/header";
-import { CardImg } from "@components/card/image";
-import styles from "@components/card/card.module.css";
+import { CardContent } from "@/pages/home/components/card/content";
+import { CardHeader } from "@/pages/home/components/card/header";
+import { CardImg } from "@/pages/home/components/card/image";
+import styles from "@/pages/home/components/card/card.module.css";
 
 type Country = {
   img: string;
@@ -11,7 +11,7 @@ type Country = {
   capital: string;
 };
 
-export const Card: React.FC = () => {
+const Card: React.FC = () => {
   const countries: Array<Country> = [
     {
       img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Flag_of_Georgia.svg/800px-Flag_of_Georgia.svg.png",
@@ -37,3 +37,4 @@ export const Card: React.FC = () => {
     </div>
   );
 };
+export default Card;
