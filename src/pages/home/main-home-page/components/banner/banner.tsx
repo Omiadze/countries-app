@@ -1,6 +1,6 @@
 import React from "react";
 import banner from "@components/assets/banner.jpg";
-import styles from "@/pages/home/components/banner/banner.module.css";
+import styles from "@/pages/home/main-home-page/components/banner/banner.module.css";
 
 const Banner: React.FC = () => {
   return (

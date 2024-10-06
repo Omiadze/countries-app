@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "@/pages/home/components/card/header/header.module.css";
+import styles from "@/pages/home/main-home-page/components/card/header/header.module.css";
 
 export const CardHeader = () => {
   const [favItem, setFavItem] = useState("white");

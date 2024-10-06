@@ -1,7 +1,7 @@
 import aboutImage from "@components/assets/about.jpg";
 import styles from "./info.module.css";
 
-export const Info: React.FC = () => {
+const Info: React.FC = () => {
   return (
     <>
       <div>
@@ -34,3 +34,4 @@ export const Info: React.FC = () => {
     </>
   );
 };
+export default Info;

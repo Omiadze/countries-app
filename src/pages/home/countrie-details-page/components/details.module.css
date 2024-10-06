@@ -1,0 +1,13 @@
+.details-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 300px;
+}
+.details-container img {
+  width: 600px;
+  height: 100%;
+}
+.details-content {
+  width: 50%;
+}

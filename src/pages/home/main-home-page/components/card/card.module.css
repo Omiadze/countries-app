@@ -1,12 +1,20 @@
 .cards-container {
   padding: 5%;
   margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
 }
 .card-div {
   width: 25%;
   border: 2px solid #ebf2fa;
   padding: 2%;
-  border-radius: 20px;
+  border-radius: 10px;
+}
+.card-div a {
+  text-decoration: none;
+  color: inherit;
 }
 .card-div:hover {
   background-color: #ebf2fa;

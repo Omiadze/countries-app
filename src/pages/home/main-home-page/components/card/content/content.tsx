@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "@/pages/home/components/card/content/content.module.css";
+import styles from "@/pages/home/main-home-page/components/card/content/content.module.css";
 
 type CardContentProps = {
   name: string;
