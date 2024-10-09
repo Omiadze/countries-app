@@ -1,4 +1,6 @@
 .svg-div {
+  display: flex;
+  justify-content: space-between;
   text-align: end;
   margin-right: -2em;
   margin-top: -2em;

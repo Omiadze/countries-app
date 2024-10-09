@@ -1,17 +1,36 @@
 import { useState } from "react";
 import styles from "@/pages/home/main-home-page/components/card/header/header.module.css";
 
-export const CardHeader = () => {
-  const [favItem, setFavItem] = useState("white");
+type CardHeaderProps = {
+  votes: number;
+  onVote: () => void;
+};
+
+export const CardHeader: React.FC<CardHeaderProps> = ({ votes, onVote }) => {
+  // const votes: number = props.votes;
+  // const onVote = props.onVote
+  // const [votes, setVotes] = useState(0);
+  // const [favItem, setFavItem] = useState("white");
+  const [isClicked, setIsClicked] = useState(false);
   const handleHeardClick = () => {
-    if (favItem === "white") {
-      setFavItem("red");
-    } else {
-      setFavItem("white");
-    }
+    // setVotes(votes + 1);
+    // if (favItem === "white") {
+    //   setFavItem("red");
+    // } else {
+    //   setFavItem("white");
+    // }
+    onVote();
+    setIsClicked(true);
+
+    setTimeout(() => {
+      setIsClicked(false);
+    }, 500);
   };
   return (
     <div className={styles["svg-div"]}>
+      <div>
+        <p>VOTE: {votes}</p>
+      </div>
       <svg
         onClick={handleHeardClick}
         width="50"
@@ -22,7 +41,7 @@ export const CardHeader = () => {
       >
         <path
           d="M79.5 40C79.5 61.5332 61.8212 79 40 79C18.1788 79 0.5 61.5332 0.5 40C0.5 18.4668 18.1788 1 40 1C61.8212 1 79.5 18.4668 79.5 40Z"
-          fill={favItem}
+          fill={isClicked ? "red" : "white"}
           stroke="#E9E9F2"
         />
         <path

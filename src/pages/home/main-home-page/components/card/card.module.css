@@ -2,6 +2,7 @@
   padding: 5%;
   margin-top: 20px;
   display: flex;
+
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 20px;
@@ -19,6 +20,39 @@
 .card-div:hover {
   background-color: #ebf2fa;
   cursor: pointer;
+}
+.sortBtn {
+  margin-top: 100px;
+  align-items: center;
+  background-color: #0a66c2;
+  border: 0;
+  border-radius: 100px;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+
+  justify-content: center;
+
+  max-width: 480px;
+  min-height: 40px;
+  min-width: 0px;
+  overflow: hidden;
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  touch-action: manipulation;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+    box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+    color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  user-select: none;
+  margin-right: 10px;
+}
+
+.sortBtn:hover,
+.sortBtn:focus {
+  background-color: #16437e;
+  color: #ffffff;
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
