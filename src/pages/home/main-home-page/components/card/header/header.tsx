@@ -7,21 +7,12 @@ type CardHeaderProps = {
 };
 
 export const CardHeader: React.FC<CardHeaderProps> = ({ votes, onVote }) => {
-  // const votes: number = props.votes;
-  // const onVote = props.onVote
-  // const [votes, setVotes] = useState(0);
-  // const [favItem, setFavItem] = useState("white");
   const [isClicked, setIsClicked] = useState(false);
-  const handleHeardClick = () => {
-    // setVotes(votes + 1);
-    // if (favItem === "white") {
-    //   setFavItem("red");
-    // } else {
-    //   setFavItem("white");
-    // }
+
+  const handleClick = () => {
     onVote();
     setIsClicked(true);
-
+    // when I click the heart btn, I want to know visually that I clicked on it, so I am changing the color for 500 milliseconds
     setTimeout(() => {
       setIsClicked(false);
     }, 500);
@@ -29,10 +20,10 @@ export const CardHeader: React.FC<CardHeaderProps> = ({ votes, onVote }) => {
   return (
     <div className={styles["svg-div"]}>
       <div>
-        <p>VOTE: {votes}</p>
+        <p>HEART: {votes}</p>
       </div>
       <svg
-        onClick={handleHeardClick}
+        onClick={handleClick}
         width="50"
         height="50"
         viewBox="0 0 80 80"

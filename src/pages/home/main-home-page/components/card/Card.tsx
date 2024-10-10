@@ -4,6 +4,7 @@ import { CardHeader } from "@/pages/home/main-home-page/components/card/header";
 import { CardImg } from "@/pages/home/main-home-page/components/card/image";
 import styles from "@/pages/home/main-home-page/components/card/card.module.css";
 import { Link } from "react-router-dom";
+import Inputs from "./country-input/inputs";
 
 type Country = {
   id: string;
@@ -109,10 +110,10 @@ const Card: React.FC = () => {
     <div>
       <div>
         <button onClick={sortIncreasing} className={styles.sortBtn}>
-          Sort by Votes (Increasing)
+          Sort by HEART (Increasing)
         </button>
         <button onClick={sortDecreasing} className={styles.sortBtn}>
-          Sort by Votes (Decreasing)
+          Sort by HEART (Decreasing)
         </button>
       </div>
       <div className={styles["cards-container"]}>
@@ -130,6 +131,9 @@ const Card: React.FC = () => {
             </Link>
           </div>
         ))}
+      </div>
+      <div>
+        <Inputs setCountries={setCountries} />
       </div>
     </div>
   );
