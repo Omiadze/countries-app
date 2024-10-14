@@ -1,5 +1,11 @@
 .card-div-img {
   width: 100%;
+  min-height: 250px;
   margin-bottom: 50px;
-  object-fit: cover;
+  object-fit: contain;
+}
+@media screen and (max-width: 767px) {
+  .card-div-img {
+    min-height: 40px;
+  }
 }

@@ -1,11 +1,13 @@
 .country-form-div {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  color: var(--brown);
 }
 form {
-  border: 1px solid black;
+  border: 1px solid var(--green);
   border-radius: 5px;
   padding: 10px;
 }
@@ -19,13 +21,13 @@ input {
   padding: 10px;
   margin-bottom: 15px;
   margin-top: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--brown);
   border-radius: 4px;
   font-size: 14px;
 }
 
 .submit-btn {
-  background-color: #007bff;
+  background-color: var(--green);
   color: white;
   padding: 10px;
   border: none;
@@ -35,5 +37,5 @@ input {
 }
 
 .submit-btn:hover {
-  background-color: #0056b3;
+  background-color: var(--brown);
 }

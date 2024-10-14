@@ -1,61 +1,46 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
 import styles from "./inputs.module.css";
 
-type Country = {
-  id: string;
+type MyFormProps = {
+  handleOnSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  handleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   img: string;
   name: string;
   population: string;
   capital: string;
   info: string;
-  votes: number;
 };
-
-type InputsProps = {
-  setCountries: React.Dispatch<React.SetStateAction<Country[]>>;
-};
-const Inputs: React.FC<InputsProps> = ({ setCountries }) => {
-  const [addedCountry, setAddedCountry] = useState({
-    id: "",
-    img: "",
-    name: "",
-    population: "",
-    capital: "",
-    info: "",
-    votes: 0,
-  });
-
-  const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = event.target;
-    setAddedCountry((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-  const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setCountries((prevCountries) => [
-      ...prevCountries,
-      { ...addedCountry, id: (prevCountries.length + 1).toString() },
-    ]);
-  };
-
+const Inputs: React.FC<MyFormProps> = ({
+  handleOnSubmit,
+  handleOnChange,
+  img,
+  name,
+  population,
+  capital,
+  info,
+}) => {
   return (
     <div className={styles["country-form-div"]}>
+      <h1>Add Your Favorite Country</h1>
       <form id="addCountryForm" onSubmit={handleOnSubmit}>
         <label>
           Add image url :
-          <input type="text" name="img" onChange={handleInputChange} required />
+          <input
+            type="text"
+            value={img}
+            name="img"
+            onChange={handleOnChange}
+            required
+          />
         </label>
         <br />
         <label>
           Enter country name:
           <input
             type="text"
+            value={name}
             name="name"
-            onChange={handleInputChange}
+            onChange={handleOnChange}
             required
           />
         </label>
@@ -64,23 +49,30 @@ const Inputs: React.FC<InputsProps> = ({ setCountries }) => {
           Enter population:
           <input
             type="text"
+            value={population}
             name="population"
-            onChange={handleInputChange}
+            onChange={handleOnChange}
             required
           />
         </label>
         <br />
         <label>
           Enter country info:
-          <input type="text" name="info" onChange={handleInputChange} />
+          <input
+            type="text"
+            value={info}
+            onChange={handleOnChange}
+            name="info"
+          />
         </label>
         <br />
         <label>
           Enter capital name:
           <input
             type="text"
+            value={capital}
             name="capital"
-            onChange={handleInputChange}
+            onChange={handleOnChange}
             required
           />
         </label>
