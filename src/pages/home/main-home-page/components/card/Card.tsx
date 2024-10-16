@@ -16,10 +16,11 @@ type Country = {
   capital: string;
   info: string;
   votes: number;
+  isDeleted: boolean;
 };
 
 const Card: React.FC = () => {
-  const [removedItems, setRemovedItems] = useState<string[]>([]);
+  // const [removedItems, setRemovedItems] = useState<string[]>([]);
   const [addNewCountry, setAddNewCountry] = useState({
     img: "",
     name: "",
@@ -39,13 +40,12 @@ const Card: React.FC = () => {
       type: "onvote",
       payload: {
         id,
-        removedItems,
       },
     });
   };
 
   const sortCountriesByHearts = (sortType: "increasing" | "decreasing") => {
-    dispatch({ type: "sort", payload: { sortType, removedItems } });
+    dispatch({ type: "sort", payload: { sortType } });
   };
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -57,7 +57,7 @@ const Card: React.FC = () => {
 
   const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const countryObj: Omit<Country, "id" | "votes"> = {
+    const countryObj: Omit<Country, "id" | "votes" | "isDeleted"> = {
       img: addNewCountry.img,
       name: addNewCountry.name,
       population: addNewCountry.population,
@@ -66,9 +66,10 @@ const Card: React.FC = () => {
     };
     const formData = new FormData(event.currentTarget);
     for (const [key, value] of formData) {
-      countryObj[key as keyof Omit<Country, "id" | "votes">] = value as string;
+      countryObj[key as keyof Omit<Country, "id" | "votes" | "isDeleted">] =
+        value as string;
     }
-    dispatch({ type: "add", payload: { countryObj, removedItems } });
+    dispatch({ type: "add", payload: { countryObj } });
     setAddNewCountry({
       img: "",
       name: "",
@@ -79,15 +80,17 @@ const Card: React.FC = () => {
   };
 
   const handleUndo = (id: string) => {
-    setRemovedItems((prev) => prev.filter((removedId) => removedId !== id));
+    dispatch({ type: "undo", payload: { id } });
   };
 
   const handleDelete = (id: string) => {
-    if (removedItems.includes(id)) {
+    const country = countries.find((country) => country.id === id);
+
+    // If the country is already deleted, undo the delete
+    if (country && country.isDeleted) {
       handleUndo(id);
     } else {
       dispatch({ type: "delete", payload: { id } });
-      setRemovedItems((prev) => [...prev, id]);
     }
   };
 
@@ -108,31 +111,36 @@ const Card: React.FC = () => {
         </button>
       </div>
       <div className={styles["cards-container"]}>
-        {countries.map((item: Country) => (
-          <div
-            className={
-              removedItems.includes(item.id)
-                ? styles["removed-card-div"]
-                : styles["card-div"]
-            }
-            key={item.id}
-          >
-            <CardHeader votes={item.votes} onVote={() => handleVote(item.id)} />
-            <Link to={`/country/${item.id}`} state={{ country: item }}>
-              <CardImg img={item.img} name={item.name} />
-              <hr />
-              <CardContent
-                name={item.name}
-                population={item.population}
-                capital={item.capital}
+        {countries
+          .sort((a, b) =>
+            a.isDeleted === b.isDeleted ? 0 : a.isDeleted ? 1 : -1
+          )
+          .map((item: Country) => (
+            <div
+              className={
+                item.isDeleted ? styles["removed-card-div"] : styles["card-div"]
+              }
+              key={item.id}
+            >
+              <CardHeader
+                votes={item.votes}
+                onVote={() => handleVote(item.id)}
               />
-            </Link>
-            <button
-              className={styles["delete-btn"]}
-              onClick={() => handleDelete(item.id)}
-            >{`${removedItems.includes(item.id) ? "undo" : "Delete"}`}</button>
-          </div>
-        ))}
+              <Link to={`/country/${item.id}`} state={{ country: item }}>
+                <CardImg img={item.img} name={item.name} />
+                <hr />
+                <CardContent
+                  name={item.name}
+                  population={item.population}
+                  capital={item.capital}
+                />
+              </Link>
+              <button
+                className={styles["delete-btn"]}
+                onClick={() => handleDelete(item.id)}
+              >{`${item.isDeleted ? "undo" : "Delete"}`}</button>
+            </div>
+          ))}
       </div>
       <div>
         <Inputs
