@@ -4,6 +4,7 @@ import styles from "./inputs.module.css";
 type MyFormProps = {
   handleOnSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   handleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  inputErrorMessage: string;
   img: string;
   name: string;
   population: string;
@@ -13,6 +14,7 @@ type MyFormProps = {
 const Inputs: React.FC<MyFormProps> = ({
   handleOnSubmit,
   handleOnChange,
+  inputErrorMessage,
   img,
   name,
   population,
@@ -44,6 +46,7 @@ const Inputs: React.FC<MyFormProps> = ({
             required
           />
         </label>
+        <p>{inputErrorMessage}</p>
         <br />
         <label>
           Enter population:

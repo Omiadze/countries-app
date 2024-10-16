@@ -40,6 +40,10 @@ type Action =
   | {
       type: "undo";
       payload: { id: string };
+    }
+  | {
+      type: "search";
+      payload: { value: string };
     };
 
 export const countriesReducer = (
@@ -95,6 +99,14 @@ export const countriesReducer = (
         ? { ...country, isDeleted: false }
         : country
     );
+  }
+  if (action.type === "search") {
+    console.log(action.payload.value);
+    // this function is not finished yet
+    const updatedInitialState = countriesInitialState.filter((country) =>
+      country.name.toLowerCase().includes(action.payload.value)
+    );
+    return updatedInitialState;
   }
 
   return countriesInitialState;
