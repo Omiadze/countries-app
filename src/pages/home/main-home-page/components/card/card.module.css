@@ -68,6 +68,19 @@
   background-color: var(--brown);
   color: #ffffff;
 }
+.search-div {
+  display: flex;
+  justify-content: center;
+  padding: 2%;
+}
+.search-div form {
+  display: flex;
+  gap: 10px;
+  padding: 15px;
+}
+.search-div button {
+  padding: 10px;
+}
 
 @media (min-width: 768px) and (max-width: 1024px) {
   .card-div {

@@ -21,6 +21,8 @@ type Country = {
 
 const Card: React.FC = () => {
   // const [removedItems, setRemovedItems] = useState<string[]>([]);
+  const [textInput, setTextInput] = useState("");
+  const [inputErrorMessage, setInputErrorMessage] = useState<string>("");
   const [addNewCountry, setAddNewCountry] = useState({
     img: "",
     name: "",
@@ -49,6 +51,11 @@ const Card: React.FC = () => {
   };
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
+    if (name === "name" && value.length > 10) {
+      setInputErrorMessage("The name should not be longer than 10 letters");
+    } else {
+      setInputErrorMessage("");
+    }
     setAddNewCountry((prev) => ({
       ...prev,
       [name]: value,
@@ -93,6 +100,11 @@ const Card: React.FC = () => {
       dispatch({ type: "delete", payload: { id } });
     }
   };
+  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setTextInput(value);
+    dispatch({ type: "search", payload: { value } });
+  };
 
   return (
     <div>
@@ -109,6 +121,12 @@ const Card: React.FC = () => {
         >
           Sort by HEART (Decreasing)
         </button>
+      </div>
+      <div className={styles["search-div"]}>
+        <form id="searchForm">
+          <input type="text" value={textInput} onChange={onSearchChange} />
+          <button type="submit">Search</button>
+        </form>
       </div>
       <div className={styles["cards-container"]}>
         {countries
@@ -146,6 +164,7 @@ const Card: React.FC = () => {
         <Inputs
           handleOnSubmit={handleOnSubmit}
           handleOnChange={handleOnChange}
+          inputErrorMessage={inputErrorMessage}
           img={addNewCountry.img}
           name={addNewCountry.name}
           population={addNewCountry.population}
