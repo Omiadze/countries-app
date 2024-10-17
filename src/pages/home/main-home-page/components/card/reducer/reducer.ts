@@ -103,7 +103,9 @@ export const countriesReducer = (
   if (action.type === "search") {
     console.log(action.payload.value);
     // this function is not finished yet
-    const updatedInitialState = countriesInitialState.filter((country) =>
+    const copyCountryState = [...countriesInitialState];
+    console.log(copyCountryState);
+    const updatedInitialState = copyCountryState.filter((country) =>
       country.name.toLowerCase().includes(action.payload.value)
     );
     return updatedInitialState;

@@ -105,6 +105,9 @@ const Card: React.FC = () => {
     setTextInput(value);
     dispatch({ type: "search", payload: { value } });
   };
+  // const filteredCountries = countriesInitialState.filter((country) => {
+  //   country.name.toLocaleLowerCase().includes(textInput.toLocaleLowerCase());
+  // });
 
   return (
     <div>
@@ -125,7 +128,7 @@ const Card: React.FC = () => {
       <div className={styles["search-div"]}>
         <form id="searchForm">
           <input type="text" value={textInput} onChange={onSearchChange} />
-          <button type="submit">Search</button>
+          <button type="submit">Clear Search</button>
         </form>
       </div>
       <div className={styles["cards-container"]}>
