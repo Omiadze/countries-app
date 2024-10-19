@@ -1,41 +1,46 @@
-import "./App.css";
-import { Routes, Route } from "react-router-dom";
-// import HomePage from "./pages/home/views";
+import { useState } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { Layout } from "./layout";
-// import AboutPage from "./pages/about/views";
-import { lazy, Suspense } from "react";
 import Skeleton from "./pages/skeleton";
 import NotFound from "./pages/not-found";
-// import DetailsPage from "./pages/home/countrie-details-page/components/details-page";
-// import ContactPage from "./pages/contact/views";
-// import FavoritesPage from "./pages/favorites/views";
+import { Navigate } from "react-router-dom";
+import { lazy, Suspense } from "react";
 
 const LazyHomePage = lazy(() => import("./pages/home/views"));
 const LazyAboutPage = lazy(() => import("./pages/about/views"));
 const LazyContactPage = lazy(() => import("./pages/contact/views"));
-const LazyFavoritesPage = lazy(() => import("./pages/favorites/views"));
-const LazyDetailsPage = lazy(
-  () => import("./pages/home/countrie-details-page/components/details-page")
-);
+
+// export const LangContext = createContext();
 
 function App() {
+  const [currentLang, setCurrentLeng] = useState<string>("eng");
+  const navigate = useNavigate(); // Add this line
+
+  const handleLanguageChange = () => {
+    const newLang = currentLang === "eng" ? "ka" : "eng";
+    setCurrentLeng(newLang);
+    navigate(`/${newLang}/home`); // Update the URL based on the new language
+  };
+
   return (
     <>
+      {/* Step 2: Wrap Routes with langContext.Provider */}
+
       <Routes>
-        <Route element={<Layout />}>
+        <Route
+          path="/:lang"
+          element={
+            <Layout
+              currentLang={currentLang}
+              handleLanguageChange={handleLanguageChange}
+            />
+          }
+        >
           <Route
-            path="/"
+            path="home"
             element={
               <Suspense fallback={<Skeleton />}>
                 <LazyHomePage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/country/:id"
-            element={
-              <Suspense fallback={<Skeleton />}>
-                <LazyDetailsPage />
               </Suspense>
             }
           />
@@ -48,14 +53,6 @@ function App() {
             }
           />
           <Route
-            path="favorites"
-            element={
-              <Suspense fallback={<Skeleton />}>
-                <LazyFavoritesPage />
-              </Suspense>
-            }
-          />
-          <Route
             path="contact"
             element={
               <Suspense fallback={<Skeleton />}>
@@ -64,6 +61,7 @@ function App() {
             }
           />
         </Route>
+        <Route path="/" element={<Navigate to={`/${currentLang}/home`} />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

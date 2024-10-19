@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
 import logo from "@components/assets/logo.png";
 import styles from "@components/header/header.module.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
+import { LangContext } from "@/layout";
 
 export const Header: React.FC = () => {
+  const { currentLang } = useContext(LangContext);
+  const { handleLanguageChange } = useContext(LangContext);
+  const { lang } = useParams();
+  console.log(lang);
   const nav: string[] = ["Home", "About", "Favorites", "contact"];
+  const navKa: string[] = [
+    "მთავარი გვერდი",
+    "ჩვენს შესახებ",
+    "რჩეულები",
+    "კონტაქტი",
+  ];
+  const navList = currentLang === "ka" ? navKa : nav;
+  console.log("context", currentLang);
   return (
     <div className={styles.header}>
       <div className={styles.logo}>
@@ -14,16 +27,19 @@ export const Header: React.FC = () => {
         </h1>
       </div>
       <div className={styles["nav-lists"]}>
-        {nav.map((item) => (
+        {navList.map((item) => (
           <NavLink
             key={item}
-            to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+            to={`${item.toLowerCase()}`}
             className={({ isActive }) => (isActive ? styles.active : undefined)}
           >
             {item}
           </NavLink>
         ))}
       </div>
+      <button onClick={handleLanguageChange}>{`${
+        currentLang === "ka" ? "kartuli" : "english"
+      }`}</button>
     </div>
   );
 };

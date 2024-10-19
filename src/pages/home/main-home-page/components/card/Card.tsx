@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useContext, useReducer, useState } from "react";
 import { CardContent } from "@/pages/home/main-home-page/components/card/content";
 import { CardHeader } from "@/pages/home/main-home-page/components/card/header";
 import { CardImg } from "@/pages/home/main-home-page/components/card/image";
@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import Inputs from "./country-input/inputs";
 import { countriesReducer } from "./reducer/reducer";
 import { countriesInitialState } from "./reducer/state";
+import { LangContext } from "@/layout";
 
 type Country = {
   id: string;
@@ -17,9 +18,17 @@ type Country = {
   info: string;
   votes: number;
   isDeleted: boolean;
+  nameKa: string;
+  populationKa: string;
+  infoKa: string;
+  capitalKa: string;
 };
 
 const Card: React.FC = () => {
+  const { currentLang } = useContext(LangContext);
+
+  // const { lang } = useParams();
+  // console.log(`params ${lang}`);
   // const [removedItems, setRemovedItems] = useState<string[]>([]);
   const [textInput, setTextInput] = useState("");
   const [inputErrorMessage, setInputErrorMessage] = useState<string>("");
@@ -147,13 +156,17 @@ const Card: React.FC = () => {
                 votes={item.votes}
                 onVote={() => handleVote(item.id)}
               />
-              <Link to={`/country/${item.id}`} state={{ country: item }}>
+              <Link to={`/ka/country/${item.id}`} state={{ country: item }}>
                 <CardImg img={item.img} name={item.name} />
                 <hr />
                 <CardContent
-                  name={item.name}
-                  population={item.population}
-                  capital={item.capital}
+                  name={currentLang === "eng" ? item.name : item.nameKa}
+                  population={
+                    currentLang === "eng" ? item.population : item.populationKa
+                  }
+                  capital={
+                    currentLang === "eng" ? item.capital : item.capitalKa
+                  }
                 />
               </Link>
               <button

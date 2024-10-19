@@ -8,6 +8,10 @@ interface Country {
   info: string;
   votes: number;
   isDeleted: boolean;
+  nameKa: string;
+  populationKa: string;
+  infoKa: string;
+  capitalKa: string;
 }
 
 type Action =

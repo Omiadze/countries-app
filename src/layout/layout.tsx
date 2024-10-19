@@ -1,13 +1,18 @@
 import { Header } from "@components/header";
 import { Outlet } from "react-router-dom";
 import Footer from "@/components/footer/footer";
+import { createContext } from "react";
 
-export const Layout = () => {
+export const LangContext = createContext();
+
+export const Layout = ({ currentLang, handleLanguageChange }) => {
   return (
-    <div>
-      <Header />
-      <Outlet />
-      <Footer />
-    </div>
+    <LangContext.Provider value={{ currentLang, handleLanguageChange }}>
+      <div>
+        <Header />
+        <Outlet />
+        <Footer />
+      </div>
+    </LangContext.Provider>
   );
 };
