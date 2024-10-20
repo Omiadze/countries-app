@@ -1,4 +1,5 @@
 // import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import styles from "./inputs.module.css";
 
 type MyFormProps = {
@@ -21,12 +22,15 @@ const Inputs: React.FC<MyFormProps> = ({
   capital,
   info,
 }) => {
+  const { lang } = useParams();
   return (
     <div className={styles["country-form-div"]}>
-      <h1>Add Your Favorite Country</h1>
+      <h1>
+        {lang === "eng" ? "Add Your Favorite Country" : "შენი ფავორიტი ქვეყანა"}
+      </h1>
       <form id="addCountryForm" onSubmit={handleOnSubmit}>
         <label>
-          Add image url :
+          {lang === "eng" ? "Add image url :" : "დაამატე სურათის URL"}
           <input
             type="text"
             value={img}
@@ -37,7 +41,7 @@ const Inputs: React.FC<MyFormProps> = ({
         </label>
         <br />
         <label>
-          Enter country name:
+          {lang === "eng" ? "Enter country name:" : "ჩაწერე ქვეყნის სახელი"}
           <input
             type="text"
             value={name}
@@ -49,7 +53,7 @@ const Inputs: React.FC<MyFormProps> = ({
         <p>{inputErrorMessage}</p>
         <br />
         <label>
-          Enter population:
+          {lang === "eng" ? "Enter population:" : "ჩაწერე მოსახლეობა"}
           <input
             type="text"
             value={population}
@@ -60,7 +64,7 @@ const Inputs: React.FC<MyFormProps> = ({
         </label>
         <br />
         <label>
-          Enter country info:
+          {lang === "eng" ? "Enter country info:" : "ჩაწერე ქვეყნის ინფორმაცია"}
           <input
             type="text"
             value={info}
@@ -70,7 +74,7 @@ const Inputs: React.FC<MyFormProps> = ({
         </label>
         <br />
         <label>
-          Enter capital name:
+          {lang === "eng" ? "Enter capital name:" : "ჩაწერე ქვეყნის დედაქალაქი"}
           <input
             type="text"
             value={capital}
@@ -81,7 +85,7 @@ const Inputs: React.FC<MyFormProps> = ({
         </label>
         <br />
         <button className={styles["submit-btn"]} type="submit" value="Submit">
-          ADD
+          {lang === "eng" ? "ADD" : "დაამატე"}
         </button>
       </form>
     </div>

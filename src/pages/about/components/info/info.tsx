@@ -1,37 +1,58 @@
 import aboutImage from "@components/assets/about.jpg";
 import styles from "./info.module.css";
+import { useParams } from "react-router-dom";
 
 const Info: React.FC = () => {
+  const { lang } = useParams<{ lang: string }>();
+
   return (
     <>
       <div>
-        <img className={styles["about-img"]} src={aboutImage} alt="" />
+        <img
+          className={styles["about-img"]}
+          src={aboutImage}
+          alt="About Countrymania"
+        />
       </div>
       <div className={styles["about-text-container"]}>
-        <div className={styles["about-text"]}>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </p>
-        </div>
-        <div className={styles["about-text"]}>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </p>
-        </div>
+        {lang === "eng" ? (
+          <>
+            <div className={styles["about-text"]}>
+              <p>
+                Explore with Ease: Our user-friendly interface makes it easy to
+                navigate through countries, view stunning images, and access
+                valuable information at your fingertips.
+              </p>
+            </div>
+            <div className={styles["about-text"]}>
+              <p>
+                Stay Updated: We regularly update our content to ensure that you
+                have the latest information and trends about countries, making
+                CountryMania a reliable resource.
+              </p>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className={styles["about-text"]}>
+              <p>
+                მარტივად აღმოაჩინეთ: ჩვენი მარტივი ინტერფეისი გაწვდობთ
+                საშუალებას გაწვდოთ ქვეყნების ინფორმაციის გაგება, ნახოთ მშვენიერი
+                სურათები და მიიღოთ ღირებული ინფორმაცია ხელმისაწვდომობაში.
+              </p>
+            </div>
+            <div className={styles["about-text"]}>
+              <p>
+                დარჩით განახლებულ: ჩვენ რეგულარულად განვახლებთ ჩვენს შინაარსს,
+                რომ უზრუნველვყოთ თქვენთვის ბოლო ინფორმაცია და ტენდენციები
+                ქვეყნების შესახებ, რაც CountryMania-ს საიმედო წყაროა.
+              </p>
+            </div>
+          </>
+        )}
       </div>
     </>
   );
 };
+
 export default Info;

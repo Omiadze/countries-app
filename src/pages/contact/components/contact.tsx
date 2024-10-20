@@ -1,6 +1,7 @@
 // unda gavaketot useState-is gareshe
 import { useState } from "react";
 import styles from "./contact.module.css";
+import { useParams } from "react-router-dom";
 
 const Contact: React.FC = () => {
   const [contactinputs, setContactInputs] = useState({
@@ -10,7 +11,7 @@ const Contact: React.FC = () => {
     message: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
-
+  const { lang } = useParams();
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -37,7 +38,7 @@ const Contact: React.FC = () => {
     <div className={styles["contact-container"]}>
       <form id="nameform" onSubmit={handleOnSubmit}>
         <label>
-          Enter your name:
+          {lang === "eng" ? "Enter your name:" : "სახელი"}
           <input
             type="text"
             name="name"
@@ -47,7 +48,7 @@ const Contact: React.FC = () => {
         </label>
         <br />
         <label>
-          Enter your surname:
+          {lang === "eng" ? "Enter your surname:" : "გვარი"}
           <input
             type="text"
             name="surname"
@@ -57,7 +58,7 @@ const Contact: React.FC = () => {
         </label>
         <br />
         <label>
-          Enter your email:
+          {lang === "eng" ? "Enter your email:" : "მეილი"}
           <input
             type="email"
             name="email"
@@ -67,7 +68,7 @@ const Contact: React.FC = () => {
         </label>
         <br />
         <label>
-          Message
+          {lang === "eng" ? "Message" : "მესიჯი"}
           <textarea
             name="message"
             value={contactinputs.message}
@@ -84,7 +85,7 @@ const Contact: React.FC = () => {
         <p style={{ color: "red" }}>{errorMessage}</p>
         <br />
         <button className={styles["submit-btn"]} type="submit" value="Submit">
-          Send
+          {lang === "eng" ? "Send" : "გაგზავნა"}
         </button>
       </form>
     </div>

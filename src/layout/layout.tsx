@@ -3,9 +3,21 @@ import { Outlet } from "react-router-dom";
 import Footer from "@/components/footer/footer";
 import { createContext } from "react";
 
-export const LangContext = createContext();
+interface Props {
+  currentLang: string;
+  handleLanguageChange: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}
+const defaultLangContext: Props = {
+  currentLang: "eng",
+  handleLanguageChange: () => {},
+};
 
-export const Layout = ({ currentLang, handleLanguageChange }) => {
+export const LangContext = createContext<Props>(defaultLangContext);
+
+export const Layout: React.FC<Props> = ({
+  currentLang,
+  handleLanguageChange,
+}) => {
   return (
     <LangContext.Provider value={{ currentLang, handleLanguageChange }}>
       <div>

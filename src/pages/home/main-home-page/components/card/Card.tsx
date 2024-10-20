@@ -26,10 +26,6 @@ type Country = {
 
 const Card: React.FC = () => {
   const { currentLang } = useContext(LangContext);
-
-  // const { lang } = useParams();
-  // console.log(`params ${lang}`);
-  // const [removedItems, setRemovedItems] = useState<string[]>([]);
   const [textInput, setTextInput] = useState("");
   const [inputErrorMessage, setInputErrorMessage] = useState<string>("");
   const [addNewCountry, setAddNewCountry] = useState({
@@ -79,6 +75,10 @@ const Card: React.FC = () => {
       population: addNewCountry.population,
       capital: addNewCountry.capital,
       info: addNewCountry.info,
+      nameKa: "",
+      populationKa: "",
+      infoKa: "",
+      capitalKa: "",
     };
     const formData = new FormData(event.currentTarget);
     for (const [key, value] of formData) {
@@ -125,19 +125,25 @@ const Card: React.FC = () => {
           onClick={() => sortCountriesByHearts("increasing")}
           className={styles.sortBtn}
         >
-          Sort by HEART (Increasing)
+          {currentLang === "eng"
+            ? "Sort by HEART (Increasing)"
+            : "დალაგება გულების მიხედვით (ზრდადობით)"}
         </button>
         <button
           onClick={() => sortCountriesByHearts("decreasing")}
           className={styles.sortBtn}
         >
-          Sort by HEART (Decreasing)
+          {currentLang === "eng"
+            ? "Sort by HEART (Decreasing)"
+            : "დალაგება გულების მიხედვით (კლებადობით)"}
         </button>
       </div>
       <div className={styles["search-div"]}>
         <form id="searchForm">
           <input type="text" value={textInput} onChange={onSearchChange} />
-          <button type="submit">Clear Search</button>
+          <button type="submit">
+            {currentLang === "eng" ? "Clear Search" : "ძიების გასუფთავება"}
+          </button>
         </form>
       </div>
       <div className={styles["cards-container"]}>
@@ -169,10 +175,15 @@ const Card: React.FC = () => {
                   }
                 />
               </Link>
+
               <button
                 className={styles["delete-btn"]}
                 onClick={() => handleDelete(item.id)}
-              >{`${item.isDeleted ? "undo" : "Delete"}`}</button>
+              >
+                {currentLang === "eng"
+                  ? `${item.isDeleted ? "undo" : "Delete"}`
+                  : `${item.isDeleted ? "დაბრუნება" : "წაშლა"}`}
+              </button>
             </div>
           ))}
       </div>
