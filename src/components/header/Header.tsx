@@ -9,6 +9,10 @@ export const Header: React.FC = () => {
   const { handleLanguageChange } = useContext(LangContext);
   const { lang } = useParams();
   console.log(lang);
+  // const navLang = {
+  //   listKa: ["მთავარი გვერდი", "ჩვენს შესახებ", "რჩეულები", "კონტაქტი"],
+  //   listEng: ["Home", "About", "Favorites", "contact"],
+  // };
   const nav: string[] = ["Home", "About", "Favorites", "contact"];
   const navKa: string[] = [
     "მთავარი გვერდი",
@@ -27,7 +31,7 @@ export const Header: React.FC = () => {
         </h1>
       </div>
       <div className={styles["nav-lists"]}>
-        {navList.map((item) => (
+        {/* {navList.map((item) => (
           <NavLink
             key={item}
             to={`${item.toLowerCase()}`}
@@ -35,7 +39,11 @@ export const Header: React.FC = () => {
           >
             {item}
           </NavLink>
-        ))}
+        ))} */}
+        <NavLink to={`${nav[0].toLowerCase()}`}>{navList[0]}</NavLink>
+        <NavLink to={`${nav[1].toLowerCase()}`}>{navList[1]}</NavLink>
+        <NavLink to={`${nav[2].toLowerCase()}`}>{navList[2]}</NavLink>
+        <NavLink to={`${nav[3].toLowerCase()}`}>{navList[3]}</NavLink>
       </div>
       <button onClick={handleLanguageChange}>{`${
         currentLang === "ka" ? "kartuli" : "english"

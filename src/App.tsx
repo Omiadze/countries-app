@@ -9,6 +9,7 @@ import { lazy, Suspense } from "react";
 const LazyHomePage = lazy(() => import("./pages/home/views"));
 const LazyAboutPage = lazy(() => import("./pages/about/views"));
 const LazyContactPage = lazy(() => import("./pages/contact/views"));
+const LazyFavoritesPage = lazy(() => import("./pages/favorites/views"));
 
 // export const LangContext = createContext();
 
@@ -49,6 +50,14 @@ function App() {
             element={
               <Suspense fallback={<Skeleton />}>
                 <LazyAboutPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="favorites"
+            element={
+              <Suspense fallback={<Skeleton />}>
+                <LazyFavoritesPage />
               </Suspense>
             }
           />
