@@ -32,6 +32,8 @@
 }
 .sort-btn-div {
   margin-top: 100px;
+  display: flex;
+  justify-content: center;
 }
 .sortBtn,
 .delete-btn {

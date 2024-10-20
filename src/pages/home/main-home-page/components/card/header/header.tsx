@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "@/pages/home/main-home-page/components/card/header/header.module.css";
+import { useParams } from "react-router-dom";
 
 type CardHeaderProps = {
   votes: number;
@@ -8,6 +9,8 @@ type CardHeaderProps = {
 
 export const CardHeader: React.FC<CardHeaderProps> = ({ votes, onVote }) => {
   const [isClicked, setIsClicked] = useState(false);
+  // in this component I am finding out language with useParams
+  const { lang } = useParams();
 
   const handleClick = () => {
     onVote();
@@ -20,7 +23,7 @@ export const CardHeader: React.FC<CardHeaderProps> = ({ votes, onVote }) => {
   return (
     <div className={styles["svg-div"]}>
       <div>
-        <p>HEART: {votes}</p>
+        <p>{`${lang === "eng" ? `HEART: ${votes}` : `გული: ${votes}`}`}</p>
       </div>
       <svg
         onClick={handleClick}

@@ -49,6 +49,17 @@
 .nav-lists a.active {
   color: var(--green);
 }
+.lang-btn {
+  padding: 10px;
+  background-color: var(--green);
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+.lang-btn:hover {
+  cursor: pointer;
+  background-color: var(--brown);
+}
 @media screen and (max-width: 767px) {
   .logo img {
     height: 40px;

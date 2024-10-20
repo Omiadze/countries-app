@@ -11,22 +11,18 @@ const LazyAboutPage = lazy(() => import("./pages/about/views"));
 const LazyContactPage = lazy(() => import("./pages/contact/views"));
 const LazyFavoritesPage = lazy(() => import("./pages/favorites/views"));
 
-// export const LangContext = createContext();
-
 function App() {
-  const [currentLang, setCurrentLeng] = useState<string>("eng");
-  const navigate = useNavigate(); // Add this line
+  const [currentLang, setCurrentLang] = useState<"eng" | "ka">("eng");
+  const navigate = useNavigate();
 
-  const handleLanguageChange = () => {
-    const newLang = currentLang === "eng" ? "ka" : "eng";
-    setCurrentLeng(newLang);
-    navigate(`/${newLang}/home`); // Update the URL based on the new language
+  const handleLanguageChange: () => void = () => {
+    const newLang: "eng" | "ka" = currentLang === "eng" ? "ka" : "eng";
+    setCurrentLang(newLang);
+    navigate(`/${newLang}/home`);
   };
 
   return (
     <>
-      {/* Step 2: Wrap Routes with langContext.Provider */}
-
       <Routes>
         <Route
           path="/:lang"

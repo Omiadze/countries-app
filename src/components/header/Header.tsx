@@ -1,18 +1,12 @@
 import React, { useContext } from "react";
 import logo from "@components/assets/logo.png";
 import styles from "@components/header/header.module.css";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { LangContext } from "@/layout";
 
 export const Header: React.FC = () => {
-  const { currentLang } = useContext(LangContext);
-  const { handleLanguageChange } = useContext(LangContext);
-  const { lang } = useParams();
-  console.log(lang);
-  // const navLang = {
-  //   listKa: ["მთავარი გვერდი", "ჩვენს შესახებ", "რჩეულები", "კონტაქტი"],
-  //   listEng: ["Home", "About", "Favorites", "contact"],
-  // };
+  // using useContext for to know language
+  const { currentLang, handleLanguageChange } = useContext(LangContext);
   const nav: string[] = ["Home", "About", "Favorites", "contact"];
   const navKa: string[] = [
     "მთავარი გვერდი",
@@ -21,7 +15,7 @@ export const Header: React.FC = () => {
     "კონტაქტი",
   ];
   const navList = currentLang === "ka" ? navKa : nav;
-  console.log("context", currentLang);
+
   return (
     <div className={styles.header}>
       <div className={styles.logo}>
@@ -40,13 +34,33 @@ export const Header: React.FC = () => {
             {item}
           </NavLink>
         ))} */}
-        <NavLink to={`${nav[0].toLowerCase()}`}>{navList[0]}</NavLink>
-        <NavLink to={`${nav[1].toLowerCase()}`}>{navList[1]}</NavLink>
-        <NavLink to={`${nav[2].toLowerCase()}`}>{navList[2]}</NavLink>
-        <NavLink to={`${nav[3].toLowerCase()}`}>{navList[3]}</NavLink>
+        <NavLink
+          to={`${nav[0].toLowerCase()}`}
+          className={({ isActive }) => (isActive ? styles.active : undefined)}
+        >
+          {navList[0]}
+        </NavLink>
+        <NavLink
+          to={`${nav[1].toLowerCase()}`}
+          className={({ isActive }) => (isActive ? styles.active : undefined)}
+        >
+          {navList[1]}
+        </NavLink>
+        <NavLink
+          to={`${nav[2].toLowerCase()}`}
+          className={({ isActive }) => (isActive ? styles.active : undefined)}
+        >
+          {navList[2]}
+        </NavLink>
+        <NavLink
+          to={`${nav[3].toLowerCase()}`}
+          className={({ isActive }) => (isActive ? styles.active : undefined)}
+        >
+          {navList[3]}
+        </NavLink>
       </div>
-      <button onClick={handleLanguageChange}>{`${
-        currentLang === "ka" ? "kartuli" : "english"
+      <button className={styles["lang-btn"]} onClick={handleLanguageChange}>{`${
+        currentLang === "eng" ? "ქართული" : "English"
       }`}</button>
     </div>
   );
