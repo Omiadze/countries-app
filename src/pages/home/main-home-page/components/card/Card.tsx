@@ -19,12 +19,12 @@ type Country = {
   votes: number;
   isDeleted: boolean;
   nameKa: string;
-  populationKa: string;
   infoKa: string;
   capitalKa: string;
 };
 
 const Card: React.FC = () => {
+  // usestates
   const { currentLang } = useContext(LangContext);
   const [textInput, setTextInput] = useState("");
   const [inputErrorMessage, setInputErrorMessage] = useState<string>("");
@@ -34,8 +34,11 @@ const Card: React.FC = () => {
     population: "",
     capital: "",
     info: "",
+    nameKa: "",
+    capitalKa: "",
+    infoKa: "",
   });
-
+  // useReducer
   const [countries, dispatch] = useReducer(
     countriesReducer,
     countriesInitialState
@@ -54,44 +57,71 @@ const Card: React.FC = () => {
   const sortCountriesByHearts = (sortType: "increasing" | "decreasing") => {
     dispatch({ type: "sort", payload: { sortType } });
   };
+
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
+
     if (name === "name" && value.length > 10) {
       setInputErrorMessage("The name should not be longer than 10 letters");
     } else {
       setInputErrorMessage("");
+      setAddNewCountry((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
-    setAddNewCountry((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
   };
 
-  const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleOnSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+
     const countryObj: Omit<Country, "id" | "votes" | "isDeleted"> = {
-      img: addNewCountry.img,
-      name: addNewCountry.name,
-      population: addNewCountry.population,
-      capital: addNewCountry.capital,
-      info: addNewCountry.info,
+      img: "",
+      name: "",
+      population: "",
+      capital: "",
+      info: "",
       nameKa: "",
-      populationKa: "",
       infoKa: "",
       capitalKa: "",
     };
-    const formData = new FormData(event.currentTarget);
+
     for (const [key, value] of formData) {
-      countryObj[key as keyof Omit<Country, "id" | "votes" | "isDeleted">] =
-        value as string;
+      // if key is image convert my image files to base64
+      if (key === "img") {
+        const file = value as File;
+        const base64String = await convertToBase64(file);
+        countryObj.img = base64String;
+      } else {
+        countryObj[key as keyof Omit<Country, "id" | "votes" | "isDeleted">] =
+          value as string;
+      }
     }
+
+    console.log("Country Object:", countryObj);
+
     dispatch({ type: "add", payload: { countryObj } });
+
+    // Reset
     setAddNewCountry({
       img: "",
       name: "",
       population: "",
       capital: "",
       info: "",
+      nameKa: "",
+      capitalKa: "",
+      infoKa: "",
+    });
+  };
+  //
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
     });
   };
 
@@ -114,9 +144,6 @@ const Card: React.FC = () => {
     setTextInput(value);
     dispatch({ type: "search", payload: { value } });
   };
-  // const filteredCountries = countriesInitialState.filter((country) => {
-  //   country.name.toLocaleLowerCase().includes(textInput.toLocaleLowerCase());
-  // });
 
   return (
     <div>
@@ -167,9 +194,7 @@ const Card: React.FC = () => {
                 <hr />
                 <CardContent
                   name={currentLang === "eng" ? item.name : item.nameKa}
-                  population={
-                    currentLang === "eng" ? item.population : item.populationKa
-                  }
+                  population={item.population}
                   capital={
                     currentLang === "eng" ? item.capital : item.capitalKa
                   }
@@ -192,11 +217,13 @@ const Card: React.FC = () => {
           handleOnSubmit={handleOnSubmit}
           handleOnChange={handleOnChange}
           inputErrorMessage={inputErrorMessage}
-          img={addNewCountry.img}
           name={addNewCountry.name}
           population={addNewCountry.population}
           capital={addNewCountry.capital}
           info={addNewCountry.info}
+          nameKa={addNewCountry.nameKa}
+          capitalKa={addNewCountry.capitalKa}
+          infoKa={addNewCountry.infoKa}
         />
       </div>
     </div>

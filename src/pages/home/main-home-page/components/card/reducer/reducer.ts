@@ -9,7 +9,6 @@ interface Country {
   votes: number;
   isDeleted: boolean;
   nameKa: string;
-  populationKa: string;
   infoKa: string;
   capitalKa: string;
 }
@@ -87,7 +86,7 @@ export const countriesReducer = (
       id: (countriesInitialState.length + 1).toString(),
       isDeleted: false,
     };
-
+    console.log([...countriesInitialState, newCountry]);
     return [...countriesInitialState, newCountry];
   }
   if (action.type === "delete") {
