@@ -6,5 +6,5 @@ type CardImgProps = {
 };
 
 export const CardImg: React.FC<CardImgProps> = ({ img, name }) => {
-  return <img className={styles["card-div-img"]} src={img} alt={name} />;
+  return <img className={styles["card-div-img"]} src={img} />;
 };

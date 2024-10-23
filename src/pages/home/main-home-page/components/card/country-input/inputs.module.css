@@ -39,3 +39,26 @@ input {
 .submit-btn:hover {
   background-color: var(--brown);
 }
+.langTabBtns {
+  margin: 10px;
+  display: flex;
+  gap: 10px;
+}
+.langTabBtn {
+  padding: 10px;
+  border: 2px solid var(--green);
+  background-color: white;
+  border-radius: 5px;
+}
+.langTabBtn:hover,
+.langTabBtn:focus {
+  cursor: pointer;
+  background-color: whitesmoke;
+  border: 2px solid var(--brown);
+}
+.visible {
+  display: block;
+}
+.invisible {
+  display: none;
+}
