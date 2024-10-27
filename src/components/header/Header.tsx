@@ -4,15 +4,14 @@ import styles from '@components/header/header.module.css';
 import { NavLink, useParams } from 'react-router-dom';
 
 interface Props {
-  currentLang: 'eng' | 'ka'; // Specify the type more clearly if possible
-  handleLanguageChange: () => void; // Change the parameter to be a function with no parameters
+  currentLang: 'eng' | 'ka';
+  handleLanguageChange: () => void;
 }
 
 export const Header: React.FC<Props> = ({
   currentLang,
   handleLanguageChange,
 }) => {
-  // using useContext for to know language
   const { lang } = useParams();
   const nav: string[] = ['Home', 'About', 'Favorites', 'contact'];
   const navKa: string[] = [
