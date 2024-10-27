@@ -1,12 +1,19 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import logo from '@components/assets/logo.png';
 import styles from '@components/header/header.module.css';
-import { NavLink } from 'react-router-dom';
-import { LangContext } from '@/layout';
+import { NavLink, useParams } from 'react-router-dom';
 
-export const Header: React.FC = () => {
+interface Props {
+  currentLang: 'eng' | 'ka'; // Specify the type more clearly if possible
+  handleLanguageChange: () => void; // Change the parameter to be a function with no parameters
+}
+
+export const Header: React.FC<Props> = ({
+  currentLang,
+  handleLanguageChange,
+}) => {
   // using useContext for to know language
-  const { currentLang, handleLanguageChange } = useContext(LangContext);
+  const { lang } = useParams();
   const nav: string[] = ['Home', 'About', 'Favorites', 'contact'];
   const navKa: string[] = [
     'მთავარი გვერდი',
@@ -14,7 +21,7 @@ export const Header: React.FC = () => {
     'რჩეულები',
     'კონტაქტი',
   ];
-  const navList = currentLang === 'ka' ? navKa : nav;
+  const navList = lang === 'ka' ? navKa : nav;
 
   return (
     <div className={styles.header}>
