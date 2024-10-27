@@ -1,5 +1,5 @@
-import React from "react";
-import styles from "@/pages/home/main-home-page/components/card/content/content.module.css";
+import React from 'react';
+import styles from '@/pages/home/main-home-page/components/card/content/content.module.css';
 
 type CardContentProps = {
   name: string;
@@ -13,7 +13,7 @@ export const CardContent: React.FC<CardContentProps> = ({
   capital,
 }) => {
   return (
-    <div className={styles["card-content"]}>
+    <div className={styles['card-content']}>
       <h3>Country: {name}</h3>
       <p>Population: {population}</p>
       <p>Capital: {capital}</p>

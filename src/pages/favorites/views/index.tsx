@@ -1,4 +1,4 @@
-import FavItems from "../components/fav-items";
+import FavItems from '../components/fav-items';
 
 const FavoritesPage = () => {
   return (

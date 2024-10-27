@@ -1,14 +1,14 @@
-import { Header } from "@components/header";
-import { Outlet } from "react-router-dom";
-import Footer from "@/components/footer/footer";
-import { createContext } from "react";
+import { Header } from '@components/header';
+import { Outlet } from 'react-router-dom';
+import Footer from '@/components/footer/footer';
+import { createContext } from 'react';
 
 interface Props {
   currentLang: string;
   handleLanguageChange: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 const defaultLangContext: Props = {
-  currentLang: "eng",
+  currentLang: 'eng',
   handleLanguageChange: () => {},
 };
 

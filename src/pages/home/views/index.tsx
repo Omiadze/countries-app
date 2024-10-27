@@ -1,5 +1,5 @@
-import { Banner } from "../main-home-page/components/banner";
-import { Card } from "../main-home-page/components/card";
+import { Banner } from '../main-home-page/components/banner';
+import { Card } from '../main-home-page/components/card';
 
 // import { lazy } from "react";
 // const LazyBanner = lazy(() => import("@/pages/home/components/banner/banner"));

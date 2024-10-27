@@ -15,37 +15,37 @@ interface Country {
 
 type Action =
   | {
-      type: "onvote";
+      type: 'onvote';
       payload: {
         id: string;
         // removedItems: string[];
       };
     }
   | {
-      type: "sort";
+      type: 'sort';
       payload: {
         // removedItems: string[];
-        sortType: "increasing" | "decreasing";
+        sortType: 'increasing' | 'decreasing';
       };
     }
   | {
-      type: "add";
+      type: 'add';
       payload: {
-        countryObj: Omit<Country, "id" | "votes" | "isDeleted">;
+        countryObj: Omit<Country, 'id' | 'votes' | 'isDeleted'>;
       };
     }
   | {
-      type: "delete";
+      type: 'delete';
       payload: {
         id: string;
       };
     }
   | {
-      type: "undo";
+      type: 'undo';
       payload: { id: string };
     }
   | {
-      type: "search";
+      type: 'search';
       payload: { value: string };
     };
 
@@ -53,7 +53,7 @@ export const countriesReducer = (
   countriesInitialState: Country[],
   action: Action
 ): Country[] => {
-  if (action.type === "onvote") {
+  if (action.type === 'onvote') {
     // console.log(!action.payload.removedItems.includes(action.payload.id));
     const updatedInitialState = countriesInitialState.map((country) =>
       !country.isDeleted && country.id === action.payload.id
@@ -63,7 +63,7 @@ export const countriesReducer = (
     // console.log(updatedInitialState);
     return updatedInitialState;
   }
-  if (action.type === "sort") {
+  if (action.type === 'sort') {
     const nonDeletedCountries = countriesInitialState.filter(
       (country) => !country.isDeleted
     );
@@ -72,14 +72,14 @@ export const countriesReducer = (
     );
     console.log(nonDeletedCountries);
     const sortedNonDeltetedCountries = [...nonDeletedCountries].sort((a, b) =>
-      action.payload.sortType === "increasing"
+      action.payload.sortType === 'increasing'
         ? a.votes - b.votes
         : b.votes - a.votes
     );
 
     return [...sortedNonDeltetedCountries, ...deletedCountries];
   }
-  if (action.type === "add") {
+  if (action.type === 'add') {
     const newCountry = {
       ...action.payload.countryObj,
       votes: 0,
@@ -89,21 +89,21 @@ export const countriesReducer = (
     console.log([...countriesInitialState, newCountry]);
     return [...countriesInitialState, newCountry];
   }
-  if (action.type === "delete") {
+  if (action.type === 'delete') {
     return countriesInitialState.map((country) =>
       country.id === action.payload.id
         ? { ...country, isDeleted: true }
         : country
     );
   }
-  if (action.type === "undo") {
+  if (action.type === 'undo') {
     return countriesInitialState.map((country) =>
       country.id === action.payload.id
         ? { ...country, isDeleted: false }
         : country
     );
   }
-  if (action.type === "search") {
+  if (action.type === 'search') {
     console.log(action.payload.value);
     // this function is not finished yet
     const copyCountryState = [...countriesInitialState];

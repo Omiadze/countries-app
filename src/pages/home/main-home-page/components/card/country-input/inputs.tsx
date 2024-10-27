@@ -1,7 +1,7 @@
 // import React, { useState } from "react";
-import { useParams } from "react-router-dom";
-import styles from "./inputs.module.css";
-import { useState } from "react";
+import { useParams } from 'react-router-dom';
+import styles from './inputs.module.css';
+import { useState } from 'react';
 // import { useState } from "react";
 
 type MyFormProps = {
@@ -32,31 +32,31 @@ const Inputs: React.FC<MyFormProps> = ({
   const [langTab, setLangTab] = useState(lang);
   // functions for Georgian and english Input fields...
   const handleKaBtn = () => {
-    setLangTab("ka");
+    setLangTab('ka');
   };
   const handleEngBtn = () => {
-    setLangTab("eng");
+    setLangTab('eng');
   };
 
   return (
-    <div className={styles["country-form-div"]}>
+    <div className={styles['country-form-div']}>
       <h1>
-        {lang === "eng" ? "Add Your Favorite Country" : "შენი ფავორიტი ქვეყანა"}
+        {lang === 'eng' ? 'Add Your Favorite Country' : 'შენი ფავორიტი ქვეყანა'}
       </h1>
       <div className={styles.langTabBtns}>
         <button className={styles.langTabBtn} onClick={handleKaBtn}>
-          {lang === "eng" ? "Georgian" : "ქართული"}
+          {lang === 'eng' ? 'Georgian' : 'ქართული'}
         </button>
         <button className={styles.langTabBtn} onClick={handleEngBtn}>
-          {" "}
-          {lang === "eng" ? "English" : "ინგლისური"}
+          {' '}
+          {lang === 'eng' ? 'English' : 'ინგლისური'}
         </button>
       </div>
       <form id="addCountryForm" onSubmit={handleOnSubmit}>
         <label>
-          {langTab === "eng"
-            ? "Add image (JPG, JPEG or PNG):"
-            : "დაამატე სურათი (JPG, JPEG ან PNG)"}
+          {langTab === 'eng'
+            ? 'Add image (JPG, JPEG or PNG):'
+            : 'დაამატე სურათი (JPG, JPEG ან PNG)'}
           <input
             type="file"
             name="img"
@@ -68,7 +68,7 @@ const Inputs: React.FC<MyFormProps> = ({
         <br />
 
         {/* english inputs */}
-        <div className={langTab === "eng" ? styles.visible : styles.invisible}>
+        <div className={langTab === 'eng' ? styles.visible : styles.invisible}>
           <label>
             "Enter country name:"
             <input
@@ -105,7 +105,7 @@ const Inputs: React.FC<MyFormProps> = ({
         </div>
 
         {/* Georgian Inputs */}
-        <div className={langTab === "ka" ? styles.visible : styles.invisible}>
+        <div className={langTab === 'ka' ? styles.visible : styles.invisible}>
           <label>
             "ჩაწერე ქვეყნის სახელი"
             <input
@@ -142,7 +142,7 @@ const Inputs: React.FC<MyFormProps> = ({
         </div>
 
         <label>
-          {langTab === "eng" ? "Enter population:" : "ჩაწერე მოსახლეობა"}
+          {langTab === 'eng' ? 'Enter population:' : 'ჩაწერე მოსახლეობა'}
           <input
             type="text"
             value={population}
@@ -152,8 +152,8 @@ const Inputs: React.FC<MyFormProps> = ({
           />
         </label>
         <br />
-        <button className={styles["submit-btn"]} type="submit" value="Submit">
-          {lang === "eng" ? "ADD" : "დაამატე"}
+        <button className={styles['submit-btn']} type="submit" value="Submit">
+          {lang === 'eng' ? 'ADD' : 'დაამატე'}
         </button>
       </form>
     </div>

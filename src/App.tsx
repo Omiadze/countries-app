@@ -1,22 +1,22 @@
-import { useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
-import { Layout } from "./layout";
-import Skeleton from "./pages/skeleton";
-import NotFound from "./pages/not-found";
-import { Navigate } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { useState } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Layout } from './layout';
+import Skeleton from './pages/skeleton';
+import NotFound from './pages/not-found';
+import { Navigate } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
 
-const LazyHomePage = lazy(() => import("./pages/home/views"));
-const LazyAboutPage = lazy(() => import("./pages/about/views"));
-const LazyContactPage = lazy(() => import("./pages/contact/views"));
-const LazyFavoritesPage = lazy(() => import("./pages/favorites/views"));
+const LazyHomePage = lazy(() => import('./pages/home/views'));
+const LazyAboutPage = lazy(() => import('./pages/about/views'));
+const LazyContactPage = lazy(() => import('./pages/contact/views'));
+const LazyFavoritesPage = lazy(() => import('./pages/favorites/views'));
 
 function App() {
-  const [currentLang, setCurrentLang] = useState<"eng" | "ka">("eng");
+  const [currentLang, setCurrentLang] = useState<'eng' | 'ka'>('eng');
   const navigate = useNavigate();
 
   const handleLanguageChange: () => void = () => {
-    const newLang: "eng" | "ka" = currentLang === "eng" ? "ka" : "eng";
+    const newLang: 'eng' | 'ka' = currentLang === 'eng' ? 'ka' : 'eng';
     setCurrentLang(newLang);
     navigate(`/${newLang}/home`);
   };

@@ -1,7 +1,7 @@
-import React from "react";
-import styles from "./details.module.css";
+import React from 'react';
+import styles from './details.module.css';
 
-import { useLocation } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 const DetailsPage: React.FC = () => {
   const location = useLocation();
@@ -9,8 +9,8 @@ const DetailsPage: React.FC = () => {
   console.log(country);
 
   return (
-    <div className={styles["details-container"]}>
-      <div className={styles["details-content"]}>
+    <div className={styles['details-container']}>
+      <div className={styles['details-content']}>
         <h1>{country.name}</h1>
         <p>Population: {country.population}</p>
         <p>Capital: {country.capital}</p>

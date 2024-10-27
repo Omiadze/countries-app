@@ -1,6 +1,6 @@
-import { useState } from "react";
-import styles from "@/pages/home/main-home-page/components/card/header/header.module.css";
-import { useParams } from "react-router-dom";
+import { useState } from 'react';
+import styles from '@/pages/home/main-home-page/components/card/header/header.module.css';
+import { useParams } from 'react-router-dom';
 
 type CardHeaderProps = {
   votes: number;
@@ -21,9 +21,9 @@ export const CardHeader: React.FC<CardHeaderProps> = ({ votes, onVote }) => {
     }, 500);
   };
   return (
-    <div className={styles["svg-div"]}>
+    <div className={styles['svg-div']}>
       <div>
-        <p>{`${lang === "eng" ? `HEART: ${votes}` : `გული: ${votes}`}`}</p>
+        <p>{`${lang === 'eng' ? `HEART: ${votes}` : `გული: ${votes}`}`}</p>
       </div>
       <svg
         onClick={handleClick}
@@ -35,7 +35,7 @@ export const CardHeader: React.FC<CardHeaderProps> = ({ votes, onVote }) => {
       >
         <path
           d="M79.5 40C79.5 61.5332 61.8212 79 40 79C18.1788 79 0.5 61.5332 0.5 40C0.5 18.4668 18.1788 1 40 1C61.8212 1 79.5 18.4668 79.5 40Z"
-          fill={isClicked ? "#6F4E37" : "white"}
+          fill={isClicked ? '#6F4E37' : 'white'}
           stroke="#E9E9F2"
         />
         <path

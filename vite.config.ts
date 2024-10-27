@@ -1,7 +1,7 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 // import tsconfigPaths from "vite-tsconfig-paths";
-import path from "path";
+import path from 'path';
 
 export default defineConfig(() => {
   const rootPath = path.resolve(process.cwd());
@@ -13,9 +13,9 @@ export default defineConfig(() => {
     plugins: [react()],
     resolve: {
       alias: {
-        "~": rootPath,
-        "@": srcPath,
-        "@components": componentsPath,
+        '~': rootPath,
+        '@': srcPath,
+        '@components': componentsPath,
       },
     },
   };
