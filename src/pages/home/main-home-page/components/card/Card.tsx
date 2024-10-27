@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useRef, useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import { CardContent } from '@/pages/home/main-home-page/components/card/content';
 import { CardHeader } from '@/pages/home/main-home-page/components/card/header';
 import { CardImg } from '@/pages/home/main-home-page/components/card/image';
@@ -23,15 +23,6 @@ type Country = {
 };
 
 const Card: React.FC = () => {
-  const [count, setCount] = useState(0);
-  const prevCountRef = useRef(0);
-
-  useEffect(() => {
-    prevCountRef.current = count; // so there we are storing prev count
-  }, [count]);
-  const handleSetCount = () => {
-    setCount(count + 1);
-  };
   const { lang } = useParams();
   // usestates
   const [textInput, setTextInput] = useState('');
@@ -156,11 +147,6 @@ const Card: React.FC = () => {
 
   return (
     <div>
-      <div>
-        <h1>current count {count}</h1>
-        <h2>prev count {prevCountRef.current}</h2>
-        <button onClick={handleSetCount}>increment</button>
-      </div>
       <div className={styles['sort-btn-div']}>
         <button
           onClick={() => sortCountriesByHearts('increasing')}
