@@ -13,7 +13,7 @@ export const Header: React.FC<Props> = ({
   handleLanguageChange,
 }) => {
   const { lang } = useParams();
-  const nav: string[] = ['Home', 'About', 'Favorites', 'contact'];
+  const nav: string[] = ['Home', 'About', 'OTP', 'contact'];
   const navKa: string[] = [
     'მთავარი გვერდი',
     'ჩვენს შესახებ',

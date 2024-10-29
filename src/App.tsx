@@ -9,7 +9,7 @@ import { lazy, Suspense } from 'react';
 const LazyHomePage = lazy(() => import('./pages/home/views'));
 const LazyAboutPage = lazy(() => import('./pages/about/views'));
 const LazyContactPage = lazy(() => import('./pages/contact/views'));
-const LazyFavoritesPage = lazy(() => import('./pages/favorites/views'));
+const LazyOtpPage = lazy(() => import('./pages/otp/views'));
 
 function App() {
   const [currentLang, setCurrentLang] = useState<'eng' | 'ka'>('eng');
@@ -50,10 +50,10 @@ function App() {
             }
           />
           <Route
-            path="favorites"
+            path="otp"
             element={
               <Suspense fallback={<Skeleton />}>
-                <LazyFavoritesPage />
+                <LazyOtpPage />
               </Suspense>
             }
           />
