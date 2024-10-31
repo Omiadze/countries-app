@@ -11,15 +11,17 @@ const OtpInputs: React.FC<TypeForInputNumber> = ({ inputNumber }) => {
     index: number,
     event: ChangeEvent<HTMLInputElement>
   ) => {
-    const newValue = event.target.value.replace(/\D/g, '');
+    const newValue = event.target.value.replace(/\D/g, ''); //ამ ცვლადში ვინახავ მხოლოდ ციფრებს, დანარჩენი რაც ციფრი არ არის ვშლი
     if (newValue.length > 1) return;
 
     const updateInputValue = [...inputValues];
     updateInputValue[index] = newValue;
     setInputValues(updateInputValue);
 
-    if (index < inputNumber) {
-      if (newValue) {
+    if (newValue) {
+      if (index === inputNumber - 1) {
+        inputRefs.current[index]?.blur(); //თუ ბოლო ინფუთზე ვდგავართ ფოკუსი უნდა მოშორდეს
+      } else if (index < inputNumber) {
         inputRefs.current[index + 1]?.focus();
       }
     }
@@ -29,9 +31,12 @@ const OtpInputs: React.FC<TypeForInputNumber> = ({ inputNumber }) => {
     event: KeyboardEvent<HTMLInputElement>
   ) => {
     if (event.key === 'Backspace' && inputValues[index] === '') {
+      // ინფუთებიდან ციფრების წაშლის ფუნქციონალი
       inputRefs.current[index - 1]?.focus();
     }
   };
+
+  // ჩაკოპირების ფუნქციონალი (ისევ და ისევ მხოლოდ ციფრები)
   const handlePaste = (
     index: number,
     event: React.ClipboardEvent<HTMLInputElement>
@@ -52,20 +57,6 @@ const OtpInputs: React.FC<TypeForInputNumber> = ({ inputNumber }) => {
     const nextIndex = Math.min(index, inputNumber - 1);
     inputRefs.current[nextIndex]?.focus();
   };
-
-  // for (let i = 0; i < inputNumber; i++) {
-  //   inputs.push(
-  //     <input
-  //       className={styles['input-el']}
-  //       onChange={handleOnChange}
-  //       key={i}
-  //       type="text"
-  //       minlength="1"
-  //       maxlength="1"
-  //       pattern="[0-9]"
-  //     />
-  //   );
-  // }
 
   return (
     <div className={styles['input-div']}>
