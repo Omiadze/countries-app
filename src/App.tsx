@@ -5,6 +5,7 @@ import Skeleton from './pages/skeleton';
 import NotFound from './pages/not-found';
 import { Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
+import DetailsPage from './pages/home/countrie-details-page/components/details-page';
 
 const LazyHomePage = lazy(() => import('./pages/home/views'));
 const LazyAboutPage = lazy(() => import('./pages/about/views'));
@@ -64,6 +65,10 @@ function App() {
                 <LazyContactPage />
               </Suspense>
             }
+          />
+          <Route
+            path="country/:id" // Define the route for country details
+            element={<DetailsPage />}
           />
         </Route>
         <Route path="/" element={<Navigate to={`/${currentLang}/home`} />} />

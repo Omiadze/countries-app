@@ -1,12 +1,11 @@
-import React, { useReducer, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { CardContent } from '@/pages/home/main-home-page/components/card/content';
 import { CardHeader } from '@/pages/home/main-home-page/components/card/header';
 import { CardImg } from '@/pages/home/main-home-page/components/card/image';
 import styles from '@/pages/home/main-home-page/components/card/card.module.css';
 import { Link, useParams } from 'react-router-dom';
 import Inputs from './country-input/inputs';
-import { countriesReducer } from './reducer/reducer';
-import { countriesInitialState } from './reducer/state';
+import axios from 'axios';
 
 type Country = {
   id: string;
@@ -24,8 +23,11 @@ type Country = {
 
 const Card: React.FC = () => {
   const { lang } = useParams();
-  // usestates
-  const [textInput, setTextInput] = useState('');
+  const [countryData, setCountryData] = useState<Country[]>([]);
+  const [displayForm, setDisplayForm] = useState(false);
+  const [displaySureDiv, setDisplaySureDiv] = useState(false);
+  const [updateId, setUpdateId] = useState<string | null>(null);
+  const [editCountryData, setEditCountryData] = useState<Country | null>(null);
   const [inputErrorMessage, setInputErrorMessage] = useState<string>('');
   const [addNewCountry, setAddNewCountry] = useState({
     img: '',
@@ -35,29 +37,15 @@ const Card: React.FC = () => {
     info: '',
     nameKa: '',
     capitalKa: '',
-
     infoKa: '',
   });
-  // useReducer
+  const updateFormRef = useRef<HTMLFormElement | null>(null);
 
-  const [countries, dispatch] = useReducer(
-    countriesReducer,
-    countriesInitialState
-  );
-
-  // mutacias vuketebt Chvens country array-is, (handeling votes), am funcias vawvdit header components, imitom rom iq gvaqvs BTN, raze daCLICKis drosac viyenebt am funcias
-  const handleVote = (id: string) => {
-    dispatch({
-      type: 'onvote',
-      payload: {
-        id,
-      },
+  useEffect(() => {
+    axios.get('http://localhost:3000/countries').then((res) => {
+      setCountryData(res.data);
     });
-  };
-
-  const sortCountriesByHearts = (sortType: 'increasing' | 'decreasing') => {
-    dispatch({ type: 'sort', payload: { sortType } });
-  };
+  }, []);
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -77,7 +65,7 @@ const Card: React.FC = () => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
-    const countryObj: Omit<Country, 'id' | 'votes' | 'isDeleted'> = {
+    const countryObj: Omit<Country, 'id' | 'isDeleted'> = {
       img: '',
       name: '',
       population: '',
@@ -86,10 +74,10 @@ const Card: React.FC = () => {
       nameKa: '',
       infoKa: '',
       capitalKa: '',
+      votes: 0,
     };
 
     for (const [key, value] of formData) {
-      // if key is image convert my image files to base64
       if (key === 'img') {
         const file = value as File;
         const base64String = await convertToBase64(file);
@@ -100,81 +88,195 @@ const Card: React.FC = () => {
       }
     }
 
-    console.log('Country Object:', countryObj);
-
-    dispatch({ type: 'add', payload: { countryObj } });
-
-    // Reset
-    setAddNewCountry({
-      img: '',
-      name: '',
-      population: '',
-      capital: '',
-      info: '',
-      nameKa: '',
-      capitalKa: '',
-      infoKa: '',
-    });
+    axios
+      .post('http://localhost:3000/countries', countryObj)
+      .then((res) => {
+        setCountryData((prevData) => [...prevData, res.data]);
+        setAddNewCountry({
+          img: '',
+          name: '',
+          population: '',
+          capital: '',
+          info: '',
+          nameKa: '',
+          capitalKa: '',
+          infoKa: '',
+        });
+      })
+      .catch((error) => {
+        console.error('Error adding country:', error);
+      });
   };
-  //
+
   const convertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
+
+      reader.onloadend = () => resolve(reader.result as string);
       reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
     });
   };
 
-  const handleUndo = (id: string) => {
-    dispatch({ type: 'undo', payload: { id } });
+  const handleInputChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setEditCountryData((prevData) => ({
+      ...prevData!,
+      [name]: value,
+    }));
+  };
+
+  const handleSaveChanges = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!editCountryData) return;
+
+    const updatedData = {
+      name: editCountryData.name,
+      population: editCountryData.population,
+      capital: editCountryData.capital,
+      info: editCountryData.info,
+    };
+
+    axios
+      .patch(`http://localhost:3000/countries/${updateId}`, updatedData)
+      .then(() => {
+        setCountryData((prevData) =>
+          prevData.map((country) =>
+            country.id === updateId ? { ...country, ...updatedData } : country
+          )
+        );
+        setDisplayForm(false);
+        setUpdateId(null);
+        setEditCountryData(null);
+      })
+      .catch((error) => {
+        console.error('Error updating country:', error);
+      });
   };
 
   const handleDelete = (id: string) => {
-    const country = countries.find((country) => country.id === id);
-    // If the country is already deleted, undo the delete
-    if (country && country.isDeleted) {
-      handleUndo(id);
-    } else {
-      dispatch({ type: 'delete', payload: { id } });
-    }
+    // axios.delete(`http://localhost:3000/countries/${item.id}`).then(() => {
+    //   setCountryData((prevData) =>
+    //     prevData.filter((country) => country.id !== item.id)
+    //   );
+    // });
+    axios.patch(`http://localhost:3000/countries/${id}`);
+    setCountryData((prev) =>
+      prev.map((country) =>
+        country.id === id ? { ...country, isDeleted: true } : country
+      )
+    );
+    setDisplaySureDiv(!displaySureDiv);
+    setUpdateId(id);
+    console.log(countryData);
   };
-  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setTextInput(value);
-    dispatch({ type: 'search', payload: { value } });
+
+  const handleDeleteYesBtn = () => {
+    axios.delete(`http://localhost:3000/countries/${updateId}`).then(() => {
+      setCountryData((prev) => prev.filter((country) => !country.isDeleted));
+    });
+    setDisplaySureDiv(!displaySureDiv);
+    setUpdateId(null);
+  };
+
+  const handleDeleteNoBtn = () => {
+    setCountryData((prev) =>
+      prev.map((country) =>
+        country.id === updateId ? { ...country, isDeleted: false } : country
+      )
+    );
+    setDisplaySureDiv(!displaySureDiv);
+    setUpdateId(null);
+  };
+
+  const openUpdateForm = (country: Country) => {
+    setUpdateId(country.id);
+    setDisplayForm(true);
+    setEditCountryData(country);
+    setTimeout(() => {
+      if (updateFormRef.current) {
+        updateFormRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      }
+    }, 0);
   };
 
   return (
     <div>
-      <div className={styles['sort-btn-div']}>
-        <button
-          onClick={() => sortCountriesByHearts('increasing')}
-          className={styles.sortBtn}
-        >
-          {lang === 'eng'
-            ? 'Sort by HEART (Increasing)'
-            : 'დალაგება გულების მიხედვით (ზრდადობით)'}
+      <div
+        className={displaySureDiv ? styles['overlay'] : styles['none-sure-div']}
+      ></div>
+      <div
+        className={
+          displaySureDiv ? styles['display-sure-div'] : styles['none-sure-div']
+        }
+      >
+        <h1>You Sure You Want To Delete?</h1>
+        <button className={styles['btn']} onClick={handleDeleteYesBtn}>
+          Yes
         </button>
-        <button
-          onClick={() => sortCountriesByHearts('decreasing')}
-          className={styles.sortBtn}
-        >
-          {lang === 'eng'
-            ? 'Sort by HEART (Decreasing)'
-            : 'დალაგება გულების მიხედვით (კლებადობით)'}
+        <button className={styles['btn']} onClick={handleDeleteNoBtn}>
+          No
         </button>
       </div>
       <div className={styles['search-div']}>
-        <form id="searchForm">
-          <input type="text" value={textInput} onChange={onSearchChange} />
+        <form ref={updateFormRef} id="searchForm">
+          <input type="text" />
           <button type="submit">
             {lang === 'eng' ? 'Clear Search' : 'ძიების გასუფთავება'}
           </button>
         </form>
       </div>
+      {displayForm && editCountryData && (
+        <div className={styles.display}>
+          <form onSubmit={handleSaveChanges}>
+            <label>
+              Update Name:
+              <input
+                type="text"
+                name="name"
+                value={editCountryData.name}
+                onChange={handleInputChanges}
+              />
+            </label>
+            <label>
+              Update Capital:
+              <input
+                type="text"
+                name="capital"
+                value={editCountryData.capital}
+                onChange={handleInputChanges}
+              />
+            </label>
+            <label>
+              Update Population:
+              <input
+                type="text"
+                name="population"
+                value={editCountryData.population}
+                onChange={handleInputChanges}
+              />
+            </label>
+            <label>
+              Update Info:
+              <input
+                type="text"
+                name="info"
+                value={editCountryData.info}
+                onChange={handleInputChanges}
+              />
+            </label>
+            <button className={styles['btn']} type="submit">
+              Save Changes
+            </button>
+          </form>
+        </div>
+      )}
       <div className={styles['cards-container']}>
-        {countries
+        {countryData
           .sort((a, b) =>
             a.isDeleted === b.isDeleted ? 0 : a.isDeleted ? 1 : -1
           )
@@ -185,11 +287,11 @@ const Card: React.FC = () => {
               }
               key={item.id}
             >
-              <CardHeader
-                votes={item.votes}
-                onVote={() => handleVote(item.id)}
-              />
-              <Link to={`/ka/country/${item.id}`} state={{ country: item }}>
+              <CardHeader votes={item.votes} />
+              <Link
+                to={`/${lang}/country/${item.id}`}
+                // state={{ country: item }}
+              >
                 <CardImg img={item.img} />
                 <hr />
                 <CardContent
@@ -198,14 +300,19 @@ const Card: React.FC = () => {
                   capital={lang === 'eng' ? item.capital : item.capitalKa}
                 />
               </Link>
-
               <button
-                className={styles['delete-btn']}
+                className={styles['btn']}
                 onClick={() => handleDelete(item.id)}
               >
                 {lang === 'eng'
                   ? `${item.isDeleted ? 'undo' : 'Delete'}`
                   : `${item.isDeleted ? 'დაბრუნება' : 'წაშლა'}`}
+              </button>
+              <button
+                className={styles['btn']}
+                onClick={() => openUpdateForm(item)}
+              >
+                Update
               </button>
             </div>
           ))}
@@ -219,6 +326,7 @@ const Card: React.FC = () => {
           population={addNewCountry.population}
           capital={addNewCountry.capital}
           info={addNewCountry.info}
+          // img={addNewCountry.img}
           nameKa={addNewCountry.nameKa}
           capitalKa={addNewCountry.capitalKa}
           infoKa={addNewCountry.infoKa}
@@ -227,4 +335,5 @@ const Card: React.FC = () => {
     </div>
   );
 };
+
 export default Card;

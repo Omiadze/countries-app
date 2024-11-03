@@ -62,7 +62,7 @@ const Inputs: React.FC<MyFormProps> = ({
             name="img"
             accept=".jpg, .jpeg, .png"
             onChange={handleOnChange}
-            required
+            // required
           />
         </label>
         <br />
@@ -76,7 +76,7 @@ const Inputs: React.FC<MyFormProps> = ({
               value={name}
               name="name"
               onChange={handleOnChange}
-              required
+              // required
             />
           </label>
           <p>{inputErrorMessage}</p>
@@ -98,7 +98,7 @@ const Inputs: React.FC<MyFormProps> = ({
               value={capital}
               name="capital"
               onChange={handleOnChange}
-              required
+              // required
             />
           </label>
           <br />
@@ -113,7 +113,7 @@ const Inputs: React.FC<MyFormProps> = ({
               value={nameKa}
               name="nameKa"
               onChange={handleOnChange}
-              required
+              // required
             />
           </label>
           <p>{inputErrorMessage}</p>
@@ -135,7 +135,7 @@ const Inputs: React.FC<MyFormProps> = ({
               value={capitalKa}
               name="capitalKa"
               onChange={handleOnChange}
-              required
+              // required
             />
           </label>
           <br />
@@ -148,7 +148,7 @@ const Inputs: React.FC<MyFormProps> = ({
             value={population}
             name="population"
             onChange={handleOnChange}
-            required
+            // required
           />
         </label>
         <br />

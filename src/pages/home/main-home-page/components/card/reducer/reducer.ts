@@ -1,3 +1,5 @@
+// import axios from 'axios';
+
 //defining types so typescript does not yell
 interface Country {
   id: string;
@@ -50,12 +52,13 @@ type Action =
     };
 
 export const countriesReducer = (
-  countriesInitialState: Country[],
+  countries: Country[],
   action: Action
 ): Country[] => {
   if (action.type === 'onvote') {
     // console.log(!action.payload.removedItems.includes(action.payload.id));
-    const updatedInitialState = countriesInitialState.map((country) =>
+
+    const updatedInitialState = countries.map((country) =>
       !country.isDeleted && country.id === action.payload.id
         ? { ...country, votes: country.votes + 1 }
         : country
@@ -64,12 +67,10 @@ export const countriesReducer = (
     return updatedInitialState;
   }
   if (action.type === 'sort') {
-    const nonDeletedCountries = countriesInitialState.filter(
+    const nonDeletedCountries = countries.filter(
       (country) => !country.isDeleted
     );
-    const deletedCountries = countriesInitialState.filter(
-      (country) => country.isDeleted
-    );
+    const deletedCountries = countries.filter((country) => country.isDeleted);
     console.log(nonDeletedCountries);
     const sortedNonDeltetedCountries = [...nonDeletedCountries].sort((a, b) =>
       action.payload.sortType === 'increasing'
@@ -83,21 +84,21 @@ export const countriesReducer = (
     const newCountry = {
       ...action.payload.countryObj,
       votes: 0,
-      id: (countriesInitialState.length + 1).toString(),
+      id: (countries.length + 1).toString(),
       isDeleted: false,
     };
-    console.log([...countriesInitialState, newCountry]);
-    return [...countriesInitialState, newCountry];
+    console.log([...countries, newCountry]);
+    return [...countries, newCountry];
   }
   if (action.type === 'delete') {
-    return countriesInitialState.map((country) =>
+    return countries.map((country) =>
       country.id === action.payload.id
         ? { ...country, isDeleted: true }
         : country
     );
   }
   if (action.type === 'undo') {
-    return countriesInitialState.map((country) =>
+    return countries.map((country) =>
       country.id === action.payload.id
         ? { ...country, isDeleted: false }
         : country
@@ -106,7 +107,7 @@ export const countriesReducer = (
   if (action.type === 'search') {
     console.log(action.payload.value);
     // this function is not finished yet
-    const copyCountryState = [...countriesInitialState];
+    const copyCountryState = [...countries];
     console.log(copyCountryState);
     const updatedInitialState = copyCountryState.filter((country) =>
       country.name.toLowerCase().includes(action.payload.value)
@@ -114,5 +115,5 @@ export const countriesReducer = (
     return updatedInitialState;
   }
 
-  return countriesInitialState;
+  return countries;
 };

@@ -1,12 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './details.module.css';
 
-import { useLocation } from 'react-router-dom';
-
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+type Countries = {
+  img: string;
+  name: string;
+  population: string;
+  capital: string;
+  info: string;
+};
 const DetailsPage: React.FC = () => {
-  const location = useLocation();
-  const { country } = location.state;
-  console.log(country);
+  const [country, setCountry] = useState<Countries | null>(null);
+  const { id } = useParams();
+  console.log(id);
+  // const location = useLocation();
+  // const { country } = location.state;
+  useEffect(() => {
+    axios.get(`http://localhost:3000/countries/${id}`).then((res) => {
+      console.log(res.data);
+      setCountry(res.data);
+    });
+  }, [id]);
+  if (!country) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className={styles['details-container']}>

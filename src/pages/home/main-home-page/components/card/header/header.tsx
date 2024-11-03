@@ -4,16 +4,16 @@ import { useParams } from 'react-router-dom';
 
 type CardHeaderProps = {
   votes: number;
-  onVote: () => void;
+  // onVote: () => void;
 };
 
-export const CardHeader: React.FC<CardHeaderProps> = ({ votes, onVote }) => {
+export const CardHeader: React.FC<CardHeaderProps> = ({ votes }) => {
   const [isClicked, setIsClicked] = useState(false);
   // in this component I am finding out language with useParams
   const { lang } = useParams();
 
   const handleClick = () => {
-    onVote();
+    // onVote();
     setIsClicked(true);
     // when I click the heart btn, I want to know visually that I clicked on it, so I am changing the color for 500 milliseconds
     setTimeout(() => {

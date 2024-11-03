@@ -36,7 +36,7 @@
   justify-content: center;
 }
 .sortBtn,
-.delete-btn {
+.btn {
   align-items: center;
   background-color: var(--green);
   border: 0;
@@ -66,8 +66,8 @@
 
 .sortBtn:hover,
 .sortBtn:focus,
-.delete-btn:hover,
-.delete-btn:focus {
+.btn:hover,
+.btn:focus {
   background-color: var(--brown);
   color: #ffffff;
 }
@@ -84,7 +84,36 @@
 .search-div button {
   padding: 10px;
 }
-
+.display {
+  display: block;
+}
+.none {
+  display: none;
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+.display-sure-div {
+  display: block;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+.none-sure-div {
+  display: none;
+}
 @media (min-width: 768px) and (max-width: 1024px) {
   .card-div {
     width: 30%;
