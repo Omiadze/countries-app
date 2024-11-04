@@ -118,24 +118,38 @@ const Card: React.FC = () => {
     });
   };
 
-  const handleInputChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setEditCountryData((prevData) => ({
-      ...prevData!,
-      [name]: value,
-    }));
+  const handleInputChanges = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value, files } = event.target;
+
+    if (name === 'img' && files && files[0]) {
+      const base64String = await convertToBase64(files[0]);
+      setEditCountryData((prevData) => ({
+        ...prevData!,
+        img: base64String,
+      }));
+    } else {
+      setEditCountryData((prevData) => ({
+        ...prevData!,
+        [name]: value,
+      }));
+    }
   };
 
-  const handleSaveChanges = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSaveChanges = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!editCountryData) return;
+
+    console.log(editCountryData.img);
 
     const updatedData = {
       name: editCountryData.name,
       population: editCountryData.population,
       capital: editCountryData.capital,
       info: editCountryData.info,
+      img: editCountryData.img,
     };
 
     axios
@@ -234,6 +248,16 @@ const Card: React.FC = () => {
         <div className={styles.display}>
           <form onSubmit={handleSaveChanges}>
             <label>
+              Update Image
+              <input
+                type="file"
+                name="img"
+                accept=".jpg, .jpeg, .png"
+                onChange={handleInputChanges}
+                // required
+              />
+            </label>
+            <label>
               Update Name:
               <input
                 type="text"
@@ -326,7 +350,6 @@ const Card: React.FC = () => {
           population={addNewCountry.population}
           capital={addNewCountry.capital}
           info={addNewCountry.info}
-          // img={addNewCountry.img}
           nameKa={addNewCountry.nameKa}
           capitalKa={addNewCountry.capitalKa}
           infoKa={addNewCountry.infoKa}
