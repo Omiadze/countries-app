@@ -15,6 +15,7 @@ type MyFormProps = {
   nameKa: string;
   capitalKa: string;
   infoKa: string;
+  addCountryIsPending: boolean;
 };
 const Inputs: React.FC<MyFormProps> = ({
   handleOnSubmit,
@@ -27,6 +28,7 @@ const Inputs: React.FC<MyFormProps> = ({
   nameKa,
   capitalKa,
   infoKa,
+  addCountryIsPending,
 }) => {
   const { lang } = useParams();
   const [langTab, setLangTab] = useState(lang);
@@ -152,7 +154,12 @@ const Inputs: React.FC<MyFormProps> = ({
           />
         </label>
         <br />
-        <button className={styles['submit-btn']} type="submit" value="Submit">
+        <button
+          className={styles['submit-btn']}
+          type="submit"
+          value="Submit"
+          disabled={addCountryIsPending}
+        >
           {lang === 'eng' ? 'ADD' : 'დაამატე'}
         </button>
       </form>

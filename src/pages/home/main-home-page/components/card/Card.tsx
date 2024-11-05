@@ -1,11 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { CardContent } from '@/pages/home/main-home-page/components/card/content';
 import { CardHeader } from '@/pages/home/main-home-page/components/card/header';
 import { CardImg } from '@/pages/home/main-home-page/components/card/image';
 import styles from '@/pages/home/main-home-page/components/card/card.module.css';
 import { Link, useParams } from 'react-router-dom';
 import Inputs from './country-input/inputs';
-import axios from 'axios';
+
+import {
+  addCountry,
+  deleteCountry,
+  getCountries,
+  updateCountry,
+} from '@/api/countries';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 type Country = {
   id: string;
@@ -23,7 +30,7 @@ type Country = {
 
 const Card: React.FC = () => {
   const { lang } = useParams();
-  const [countryData, setCountryData] = useState<Country[]>([]);
+  // const [countryData, setCountryData] = useState<Country[]>([]);
   const [displayForm, setDisplayForm] = useState(false);
   const [displaySureDiv, setDisplaySureDiv] = useState(false);
   const [updateId, setUpdateId] = useState<string | null>(null);
@@ -40,12 +47,51 @@ const Card: React.FC = () => {
     infoKa: '',
   });
   const updateFormRef = useRef<HTMLFormElement | null>(null);
+  // using useQuery to get all countries I want to show in my project
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ['countries-list'],
+    queryFn: getCountries,
+    retry: 0,
+    refetchOnWindowFocus: false,
+  });
 
-  useEffect(() => {
-    axios.get('http://localhost:3000/countries').then((res) => {
-      setCountryData(res.data);
+  const { mutate: mutateUpdateCountry, isPending: updateCountryIsPending } =
+    useMutation({
+      mutationFn: updateCountry,
+      onSuccess: () => {
+        refetch();
+      },
+      onError: (error) => {
+        console.log(error);
+      },
     });
-  }, []);
+  const { mutate: mutateDeleteCountry, isPending: deleteCountryIsPending } =
+    useMutation({
+      mutationFn: deleteCountry,
+      onSuccess: () => {
+        refetch();
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
+  const { mutate: mutateaddCountry, isPending: addCountryIsPending } =
+    useMutation({
+      mutationFn: addCountry,
+      onSuccess: () => {
+        refetch();
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
+
+  // setCountryData(response);
+  console.log('data', data);
+  console.log('loading', isLoading);
+  console.log('isError', isError);
+
+  // getCountries().then((countries) => setCountryData(countries));
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -88,24 +134,17 @@ const Card: React.FC = () => {
       }
     }
 
-    axios
-      .post('http://localhost:3000/countries', countryObj)
-      .then((res) => {
-        setCountryData((prevData) => [...prevData, res.data]);
-        setAddNewCountry({
-          img: '',
-          name: '',
-          population: '',
-          capital: '',
-          info: '',
-          nameKa: '',
-          capitalKa: '',
-          infoKa: '',
-        });
-      })
-      .catch((error) => {
-        console.error('Error adding country:', error);
-      });
+    mutateaddCountry(countryObj);
+    setAddNewCountry({
+      img: '',
+      name: '',
+      population: '',
+      capital: '',
+      info: '',
+      nameKa: '',
+      capitalKa: '',
+      infoKa: '',
+    });
   };
 
   const convertToBase64 = (file: File): Promise<string> => {
@@ -137,7 +176,7 @@ const Card: React.FC = () => {
     }
   };
 
-  const handleSaveChanges = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSaveChanges = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!editCountryData) return;
@@ -152,53 +191,40 @@ const Card: React.FC = () => {
       img: editCountryData.img,
     };
 
-    axios
-      .patch(`http://localhost:3000/countries/${updateId}`, updatedData)
-      .then(() => {
-        setCountryData((prevData) =>
-          prevData.map((country) =>
-            country.id === updateId ? { ...country, ...updatedData } : country
-          )
-        );
-        setDisplayForm(false);
-        setUpdateId(null);
-        setEditCountryData(null);
-      })
-      .catch((error) => {
-        console.error('Error updating country:', error);
-      });
+    // using mutation to update country
+    mutateUpdateCountry({ id: updateId, payload: updatedData });
+    setDisplayForm(false);
+    setUpdateId(null);
+    setEditCountryData(null);
   };
 
-  const handleDelete = (id: string) => {
-    // axios.delete(`http://localhost:3000/countries/${item.id}`).then(() => {
-    //   setCountryData((prevData) =>
-    //     prevData.filter((country) => country.id !== item.id)
-    //   );
-    // });
-    axios.patch(`http://localhost:3000/countries/${id}`);
-    setCountryData((prev) =>
-      prev.map((country) =>
-        country.id === id ? { ...country, isDeleted: true } : country
-      )
-    );
+  const handleDeleteBtn = (id: string) => {
+    mutateUpdateCountry({ id: id, payload: { isDeleted: true } });
     setDisplaySureDiv(!displaySureDiv);
     setUpdateId(id);
-    console.log(countryData);
+
+    // console.log(countryData);
   };
 
   const handleDeleteYesBtn = () => {
-    axios.delete(`http://localhost:3000/countries/${updateId}`).then(() => {
-      setCountryData((prev) => prev.filter((country) => !country.isDeleted));
-    });
-    setDisplaySureDiv(!displaySureDiv);
-    setUpdateId(null);
+    // axios.delete(`http://localhost:3000/countries/${updateId}`).then(() => {
+    //   setCountryData((prev) => prev.filter((country) => !country.isDeleted));
+    // });
+    if (updateId) {
+      mutateDeleteCountry(updateId);
+      setDisplaySureDiv(!displaySureDiv);
+      setUpdateId(null);
+    }
   };
 
   const handleDeleteNoBtn = () => {
-    setCountryData((prev) =>
-      prev.map((country) =>
-        country.id === updateId ? { ...country, isDeleted: false } : country
-      )
+    mutateUpdateCountry(
+      { id: updateId, payload: { isDeleted: false } },
+      {
+        onSuccess: () => {
+          refetch();
+        },
+      }
     );
     setDisplaySureDiv(!displaySureDiv);
     setUpdateId(null);
@@ -229,7 +255,11 @@ const Card: React.FC = () => {
         }
       >
         <h1>You Sure You Want To Delete?</h1>
-        <button className={styles['btn']} onClick={handleDeleteYesBtn}>
+        <button
+          className={styles['btn']}
+          onClick={handleDeleteYesBtn}
+          disabled={deleteCountryIsPending}
+        >
           Yes
         </button>
         <button className={styles['btn']} onClick={handleDeleteNoBtn}>
@@ -293,18 +323,23 @@ const Card: React.FC = () => {
                 onChange={handleInputChanges}
               />
             </label>
-            <button className={styles['btn']} type="submit">
+            <button
+              className={styles['btn']}
+              type="submit"
+              disabled={updateCountryIsPending}
+            >
               Save Changes
             </button>
           </form>
         </div>
       )}
       <div className={styles['cards-container']}>
-        {countryData
-          .sort((a, b) =>
-            a.isDeleted === b.isDeleted ? 0 : a.isDeleted ? 1 : -1
-          )
-          .map((item: Country) => (
+        {isLoading ? (
+          <h1>Loading</h1>
+        ) : isError ? (
+          <h1>ERROR 404</h1>
+        ) : (
+          data?.map((item: Country) => (
             <div
               className={
                 item.isDeleted ? styles['removed-card-div'] : styles['card-div']
@@ -326,7 +361,7 @@ const Card: React.FC = () => {
               </Link>
               <button
                 className={styles['btn']}
-                onClick={() => handleDelete(item.id)}
+                onClick={() => handleDeleteBtn(item.id)}
               >
                 {lang === 'eng'
                   ? `${item.isDeleted ? 'undo' : 'Delete'}`
@@ -339,7 +374,8 @@ const Card: React.FC = () => {
                 Update
               </button>
             </div>
-          ))}
+          ))
+        )}
       </div>
       <div>
         <Inputs
@@ -353,6 +389,7 @@ const Card: React.FC = () => {
           nameKa={addNewCountry.nameKa}
           capitalKa={addNewCountry.capitalKa}
           infoKa={addNewCountry.infoKa}
+          addCountryIsPending={addCountryIsPending}
         />
       </div>
     </div>
