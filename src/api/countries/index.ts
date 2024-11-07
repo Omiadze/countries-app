@@ -13,10 +13,10 @@ type Country = {
   capitalKa: string;
 };
 
-type GetCountriesResponse = Country[]; // Assuming the API returns an array of Country objects
-type AddCountryResponse = Country; // Assuming the API returns the added country
-type UpdateCountryResponse = Country; // Assuming the API returns the updated country
-type DeleteCountryResponse = { message: string };
+type GetCountriesResponse = Country[];
+type AddCountryResponse = Country;
+type UpdateCountryResponse = Country;
+type DeleteCountryResponse = Country;
 
 export const getCountries = async (): Promise<
   GetCountriesResponse | undefined
@@ -67,6 +67,7 @@ export const deleteCountry = async (
     const result = await httpClient.delete<DeleteCountryResponse>(
       `/countries/${id}`
     );
+    console.log('delete', result.data);
     return result.data;
   } catch (error) {
     console.log('Error:', error);

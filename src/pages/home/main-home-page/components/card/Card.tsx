@@ -54,7 +54,7 @@ const Card: React.FC = () => {
     retry: 0,
     refetchOnWindowFocus: false,
   });
-
+  // useMutation for update
   const { mutate: mutateUpdateCountry, isPending: updateCountryIsPending } =
     useMutation({
       mutationFn: updateCountry,
@@ -65,6 +65,7 @@ const Card: React.FC = () => {
         console.log(error);
       },
     });
+  // useMutation for delete
   const { mutate: mutateDeleteCountry, isPending: deleteCountryIsPending } =
     useMutation({
       mutationFn: deleteCountry,
@@ -75,6 +76,7 @@ const Card: React.FC = () => {
         console.log(error);
       },
     });
+  // useMutation for add
   const { mutate: mutateaddCountry, isPending: addCountryIsPending } =
     useMutation({
       mutationFn: addCountry,
@@ -86,13 +88,7 @@ const Card: React.FC = () => {
       },
     });
 
-  // setCountryData(response);
-  console.log('data', data);
-  console.log('loading', isLoading);
-  console.log('isError', isError);
-
-  // getCountries().then((countries) => setCountryData(countries));
-
+  // handling events
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
@@ -202,7 +198,6 @@ const Card: React.FC = () => {
     mutateUpdateCountry({ id: id, payload: { isDeleted: true } });
     setDisplaySureDiv(!displaySureDiv);
     setUpdateId(id);
-
     // console.log(countryData);
   };
 
