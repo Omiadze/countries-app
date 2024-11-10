@@ -1,4 +1,5 @@
-.cards-container {
+.cards-container,
+.virtual-card-divs {
   padding: 5%;
   margin-top: 20px;
   display: flex;
@@ -123,4 +124,8 @@
   .card-div {
     width: 40%;
   }
+}
+.virtual-card-divs {
+  height: 500px;
+  display: flex;
 }

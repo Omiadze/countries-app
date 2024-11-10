@@ -3,16 +3,18 @@ import { CardContent } from '@/pages/home/main-home-page/components/card/content
 import { CardHeader } from '@/pages/home/main-home-page/components/card/header';
 import { CardImg } from '@/pages/home/main-home-page/components/card/image';
 import styles from '@/pages/home/main-home-page/components/card/card.module.css';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import Inputs from './country-input/inputs';
 
 import {
   addCountry,
   deleteCountry,
   getCountries,
+  getSortedCountries,
   updateCountry,
 } from '@/api/countries';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useVirtualizer } from '@tanstack/react-virtual';
 
 type Country = {
   id: string;
@@ -30,6 +32,9 @@ type Country = {
 
 const Card: React.FC = () => {
   const { lang } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [isSorting, setIsSorting] = useState(false);
   // const [countryData, setCountryData] = useState<Country[]>([]);
   const [displayForm, setDisplayForm] = useState(false);
   const [displaySureDiv, setDisplaySureDiv] = useState(false);
@@ -47,19 +52,38 @@ const Card: React.FC = () => {
     infoKa: '',
   });
   const updateFormRef = useRef<HTMLFormElement | null>(null);
+  const virtualizerRef = useRef<HTMLDivElement>(null);
+  // Get the sorting parameters from the search params
+  const sortname = searchParams.get('sortname') || 'votes';
+  const sortType = searchParams.get('sortType') || 'asc';
+
   // using useQuery to get all countries I want to show in my project
-  const { data, isLoading, isError, refetch } = useQuery({
+  const {
+    data: initialData,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
     queryKey: ['countries-list'],
     queryFn: getCountries,
     retry: 0,
     refetchOnWindowFocus: false,
   });
-  // useMutation for update
+
+  // console.log(data);
+  const { data: sortedData, refetch: refetchSort } = useQuery({
+    queryKey: ['sorted-countries', sortname, sortType],
+    queryFn: () => getSortedCountries(sortname, sortType),
+    retry: 0,
+    refetchOnWindowFocus: false,
+  });
+
   const { mutate: mutateUpdateCountry, isPending: updateCountryIsPending } =
     useMutation({
       mutationFn: updateCountry,
       onSuccess: () => {
         refetch();
+        refetchSort();
       },
       onError: (error) => {
         console.log(error);
@@ -71,6 +95,7 @@ const Card: React.FC = () => {
       mutationFn: deleteCountry,
       onSuccess: () => {
         refetch();
+        refetchSort();
       },
       onError: (error) => {
         console.log(error);
@@ -82,6 +107,7 @@ const Card: React.FC = () => {
       mutationFn: addCountry,
       onSuccess: () => {
         refetch();
+        refetchSort();
       },
       onError: (error) => {
         console.log(error);
@@ -159,6 +185,7 @@ const Card: React.FC = () => {
     const { name, value, files } = event.target;
 
     if (name === 'img' && files && files[0]) {
+      console.log('files', files);
       const base64String = await convertToBase64(files[0]);
       setEditCountryData((prevData) => ({
         ...prevData!,
@@ -238,9 +265,36 @@ const Card: React.FC = () => {
       }
     }, 0);
   };
-
+  // Virtualizer setup
+  const rowVirtualizer = useVirtualizer({
+    count: initialData?.length || 0,
+    getScrollElement: () => virtualizerRef.current,
+    estimateSize: () => 600,
+  });
+  const virtualItems = rowVirtualizer.getVirtualItems();
+  // sort country data
+  const sortIncreasing = () => {
+    setSearchParams({ sortname: 'votes', sortType: 'asc' });
+    refetchSort();
+    refetch();
+    setIsSorting(true);
+  };
+  const sortDecreasing = () => {
+    setSearchParams({ sortname: '-votes', sortType: 'desc' });
+    refetchSort();
+    refetch();
+    setIsSorting(true);
+  };
   return (
     <div>
+      <div>
+        <button onClick={sortIncreasing} className={styles.sortBtn}>
+          Sort by Votes (Increasing)
+        </button>
+        <button onClick={sortDecreasing} className={styles.sortBtn}>
+          Sort by Votes (Decreasing)
+        </button>
+      </div>
       <div
         className={displaySureDiv ? styles['overlay'] : styles['none-sure-div']}
       ></div>
@@ -262,7 +316,7 @@ const Card: React.FC = () => {
         </button>
       </div>
       <div className={styles['search-div']}>
-        <form ref={updateFormRef} id="searchForm">
+        <form id="searchForm">
           <input type="text" />
           <button type="submit">
             {lang === 'eng' ? 'Clear Search' : 'ძიების გასუფთავება'}
@@ -271,7 +325,7 @@ const Card: React.FC = () => {
       </div>
       {displayForm && editCountryData && (
         <div className={styles.display}>
-          <form onSubmit={handleSaveChanges}>
+          <form ref={updateFormRef} onSubmit={handleSaveChanges}>
             <label>
               Update Image
               <input
@@ -328,50 +382,91 @@ const Card: React.FC = () => {
           </form>
         </div>
       )}
-      <div className={styles['cards-container']}>
+      return (
+      <div
+        // className={styles['cards-container']}
+        ref={virtualizerRef}
+        style={{ overflow: 'auto', height: '1000px' }}
+      >
         {isLoading ? (
           <h1>Loading</h1>
         ) : isError ? (
           <h1>ERROR 404</h1>
         ) : (
-          data?.map((item: Country) => (
-            <div
-              className={
-                item.isDeleted ? styles['removed-card-div'] : styles['card-div']
-              }
-              key={item.id}
-            >
-              <CardHeader votes={item.votes} />
-              <Link
-                to={`/${lang}/country/${item.id}`}
-                // state={{ country: item }}
-              >
-                <CardImg img={item.img} />
-                <hr />
-                <CardContent
-                  name={lang === 'eng' ? item.name : item.nameKa}
-                  population={item.population}
-                  capital={lang === 'eng' ? item.capital : item.capitalKa}
-                />
-              </Link>
-              <button
-                className={styles['btn']}
-                onClick={() => handleDeleteBtn(item.id)}
-              >
-                {lang === 'eng'
-                  ? `${item.isDeleted ? 'undo' : 'Delete'}`
-                  : `${item.isDeleted ? 'დაბრუნება' : 'წაშლა'}`}
-              </button>
-              <button
-                className={styles['btn']}
-                onClick={() => openUpdateForm(item)}
-              >
-                Update
-              </button>
-            </div>
-          ))
+          <div
+            style={{
+              height: rowVirtualizer.getTotalSize(),
+              width: '100%',
+              position: 'relative',
+            }}
+          >
+            {virtualItems.map((virtualRow) => {
+              const item = isSorting
+                ? sortedData?.[virtualRow.index]
+                : initialData?.[virtualRow.index];
+              if (!item) return null;
+
+              return (
+                <div
+                  key={item.id}
+                  ref={(el) => {
+                    if (el) {
+                      // Using measure method to manually measure item
+                      rowVirtualizer.measureElement(el);
+                    }
+                  }}
+                  data-index={virtualRow.index}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    transform: `translateY(${virtualRow.start}px)`,
+                  }}
+                  className={
+                    item.isDeleted
+                      ? styles['removed-card-div']
+                      : styles['card-div']
+                  }
+                >
+                  <div className={styles['virtual-card-divs']}>
+                    <CardHeader
+                      id={item.id}
+                      votes={item.votes}
+                      refetch={refetch}
+                      // onVote={() => handleVotes(item.id)}
+                    />
+                    <Link to={`/${lang}/country/${item.id}`}>
+                      <CardImg img={item.img} />
+                      <hr />
+                      <CardContent
+                        name={lang === 'eng' ? item.name : item.nameKa}
+                        population={item.population}
+                        capital={lang === 'eng' ? item.capital : item.capitalKa}
+                      />
+                    </Link>
+                    <button
+                      className={styles['btn']}
+                      onClick={() => handleDeleteBtn(item.id)}
+                    >
+                      {lang === 'eng'
+                        ? `${item.isDeleted ? 'Undo' : 'Delete'}`
+                        : `${item.isDeleted ? 'დაბრუნება' : 'წაშლა'}`}
+                    </button>
+                    <button
+                      className={styles['btn']}
+                      onClick={() => openUpdateForm(item)}
+                    >
+                      {lang === 'eng' ? 'Update' : 'განახლება'}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
+      );
       <div>
         <Inputs
           handleOnSubmit={handleOnSubmit}

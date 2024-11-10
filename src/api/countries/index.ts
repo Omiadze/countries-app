@@ -28,6 +28,31 @@ export const getCountries = async (): Promise<
     console.log('Error:', error);
   }
 };
+
+export const getSortedCountries = async (
+  name: string,
+  type: string
+): Promise<GetCountriesResponse | undefined> => {
+  try {
+    const result = await httpClient.get<GetCountriesResponse>(
+      `/countries?_sort=${name}&_order=${type}`
+    );
+    return result.data;
+  } catch (error) {
+    console.log('Error:', error);
+    return undefined;
+  }
+};
+export const getCountryWithId = async (
+  id: string
+): Promise<Country | undefined> => {
+  try {
+    const result = await httpClient.get<Country>(`/countries/${id}`);
+    return result.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const addCountry = async (
   countryData: Omit<Country, 'id' | 'isDeleted'>
 ): Promise<AddCountryResponse | undefined> => {

@@ -1,32 +1,60 @@
 import { useState } from 'react';
 import styles from '@/pages/home/main-home-page/components/card/header/header.module.css';
 import { useParams } from 'react-router-dom';
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  useMutation,
+} from '@tanstack/react-query';
+import { updateCountry } from '@/api/countries';
 
 type CardHeaderProps = {
   votes: number;
-  // onVote: () => void;
+  id: string;
+  refetch: (
+    options?: RefetchOptions
+  ) => Promise<QueryObserverResult<unknown, Error>>;
 };
 
-export const CardHeader: React.FC<CardHeaderProps> = ({ votes }) => {
+export const CardHeader: React.FC<CardHeaderProps> = ({
+  id,
+  votes,
+  refetch,
+}) => {
   const [isClicked, setIsClicked] = useState(false);
-  // in this component I am finding out language with useParams
   const { lang } = useParams();
+  const { mutate: mutateUpdateVote } = useMutation({
+    mutationFn: updateCountry,
+    onSuccess: () => {
+      refetch();
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const onVote = () => {
+    const updatedVotes = votes + 1;
+    mutateUpdateVote({ id, payload: { votes: updatedVotes } });
+  };
 
   const handleClick = () => {
-    // onVote();
     setIsClicked(true);
-    // when I click the heart btn, I want to know visually that I clicked on it, so I am changing the color for 500 milliseconds
     setTimeout(() => {
       setIsClicked(false);
     }, 500);
   };
+
   return (
     <div className={styles['svg-div']}>
       <div>
         <p>{`${lang === 'eng' ? `HEART: ${votes}` : `გული: ${votes}`}`}</p>
       </div>
       <svg
-        onClick={handleClick}
+        onClick={() => {
+          handleClick();
+          onVote();
+        }}
         width="50"
         height="50"
         viewBox="0 0 80 80"
