@@ -8,6 +8,7 @@
   justify-content: space-between;
   gap: 20px;
 }
+
 .card-div {
   width: 25%;
   border: 2px solid #ebf2fa;
@@ -128,4 +129,10 @@
 .virtual-card-divs {
   height: 500px;
   display: flex;
+}
+.sort-divs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
 }

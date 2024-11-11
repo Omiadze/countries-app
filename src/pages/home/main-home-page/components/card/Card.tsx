@@ -320,7 +320,7 @@ const Card: React.FC = () => {
 
   return (
     <div>
-      <div>
+      <div className={styles['sort-divs']}>
         <button onClick={sortIncreasing} className={styles.sortBtn}>
           Sort by Votes (Increasing)
         </button>
@@ -428,6 +428,7 @@ const Card: React.FC = () => {
           <h1>ERROR 404</h1>
         ) : (
           <div
+            className={styles['cards-container']}
             style={{
               height: rowVirtualizer.getTotalSize(),
               width: '100%',
@@ -478,20 +479,22 @@ const Card: React.FC = () => {
                         capital={lang === 'eng' ? item.capital : item.capitalKa}
                       />
                     </Link>
-                    <button
-                      className={styles['btn']}
-                      onClick={() => handleDeleteBtn(item.id)}
-                    >
-                      {lang === 'eng'
-                        ? `${item.isDeleted ? 'Undo' : 'Delete'}`
-                        : `${item.isDeleted ? 'დაბრუნება' : 'წაშლა'}`}
-                    </button>
-                    <button
-                      className={styles['btn']}
-                      onClick={() => openUpdateForm(item)}
-                    >
-                      {lang === 'eng' ? 'Update' : 'განახლება'}
-                    </button>
+                    <div>
+                      <button
+                        className={styles['btn']}
+                        onClick={() => handleDeleteBtn(item.id)}
+                      >
+                        {lang === 'eng'
+                          ? `${item.isDeleted ? 'Undo' : 'Delete'}`
+                          : `${item.isDeleted ? 'დაბრუნება' : 'წაშლა'}`}
+                      </button>
+                      <button
+                        className={styles['btn']}
+                        onClick={() => openUpdateForm(item)}
+                      >
+                        {lang === 'eng' ? 'Update' : 'განახლება'}
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
