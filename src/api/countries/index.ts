@@ -26,6 +26,7 @@ export const getCountries = async (): Promise<
     return result.data;
   } catch (error) {
     console.log('Error:', error);
+    throw new Error('Failed to fetch countries');
   }
 };
 
@@ -39,10 +40,26 @@ export const getSortedCountries = async (
     );
     return result.data;
   } catch (error) {
-    console.log('Error:', error);
-    return undefined;
+    console.error('Error fetching sorted countries:', error);
+
+    throw new Error('Failed to fetch sorted countries');
   }
 };
+
+// export const getCountriesInfiniteScroll = async ({
+//   pageParam,
+// }: {
+//   pageParam: number;
+// }) => {
+//   try {
+//     const result = await httpClient.get(
+//       `/countries?_page=${pageParam}$_limit=20`
+//     );
+//     return result.data;
+//   } catch (error) {
+//     console.log('Error:', error);
+//   }
+// };
 export const getCountryWithId = async (
   id: string
 ): Promise<Country | undefined> => {
@@ -50,7 +67,8 @@ export const getCountryWithId = async (
     const result = await httpClient.get<Country>(`/countries/${id}`);
     return result.data;
   } catch (error) {
-    console.log(error);
+    console.error(`Error fetching country with id ${id}:`, error);
+    throw new Error(`Failed to fetch country with id ${id}`);
   }
 };
 export const addCountry = async (
@@ -63,7 +81,8 @@ export const addCountry = async (
     );
     return result.data;
   } catch (error) {
-    console.log(error);
+    console.error('Error adding country:', error);
+    throw new Error('Failed to add country');
   }
 };
 
@@ -81,7 +100,8 @@ export const updateCountry = async ({
     );
     return result.data;
   } catch (error) {
-    console.log(error);
+    console.error(`Error updating country with id ${id}:`, error);
+    throw new Error(`Failed to update country with id ${id}`);
   }
 };
 
@@ -95,6 +115,7 @@ export const deleteCountry = async (
     console.log('delete', result.data);
     return result.data;
   } catch (error) {
-    console.log('Error:', error);
+    console.error(`Error deleting country with id ${id}:`, error);
+    throw new Error(`Failed to delete country with id ${id}`);
   }
 };

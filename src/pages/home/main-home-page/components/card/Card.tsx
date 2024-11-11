@@ -10,10 +10,15 @@ import {
   addCountry,
   deleteCountry,
   getCountries,
+  // getCountriesInfiniteScroll,
   getSortedCountries,
   updateCountry,
 } from '@/api/countries';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  // useInfiniteQuery,
+  useMutation,
+  useQuery,
+} from '@tanstack/react-query';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
 type Country = {
@@ -69,6 +74,23 @@ const Card: React.FC = () => {
     retry: 0,
     refetchOnWindowFocus: false,
   });
+  // useInfiniteQuery
+  // const {
+  //   data: initialData,
+  //   status,
+  //   fetchNextPage,
+  //   isFetchingNextPage,
+  //   hasNextPage,
+  //   refetch,
+  // } = useInfiniteQuery({
+  //   queryKey: ['countries-infinite'],
+  //   queryFn: getCountriesInfiniteScroll,
+  //   initialPageParam: 1,
+  //   getNextPageParam: (lastPage, allPages) => {
+  //     // Logic for fetching next page
+  //     return lastPage.length ? allPages.length + 1 : undefined;
+  //   },
+  // });
 
   // console.log(data);
   const { data: sortedData, refetch: refetchSort } = useQuery({
@@ -268,6 +290,9 @@ const Card: React.FC = () => {
   // Virtualizer setup
   const rowVirtualizer = useVirtualizer({
     count: initialData?.length || 0,
+    // count: initialData
+    //   ? initialData.pages.reduce((acc, page) => acc + page.length, 0)
+    //   : 0,
     getScrollElement: () => virtualizerRef.current,
     estimateSize: () => 600,
   });
@@ -285,6 +310,14 @@ const Card: React.FC = () => {
     refetch();
     setIsSorting(true);
   };
+  // const onScroll = (e) => {
+  //   if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight) {
+  //     if (hasNextPage && !isFetchingNextPage) {
+  //       fetchNextPage();
+  //     }
+  //   }
+  // };
+
   return (
     <div>
       <div>
@@ -382,10 +415,11 @@ const Card: React.FC = () => {
           </form>
         </div>
       )}
-      return (
+
       <div
         // className={styles['cards-container']}
         ref={virtualizerRef}
+        // onScroll={onScroll}
         style={{ overflow: 'auto', height: '1000px' }}
       >
         {isLoading ? (
@@ -403,7 +437,7 @@ const Card: React.FC = () => {
             {virtualItems.map((virtualRow) => {
               const item = isSorting
                 ? sortedData?.[virtualRow.index]
-                : initialData?.[virtualRow.index];
+                : (initialData?.[virtualRow.index] as Country);
               if (!item) return null;
 
               return (
@@ -411,17 +445,16 @@ const Card: React.FC = () => {
                   key={item.id}
                   ref={(el) => {
                     if (el) {
-                      // Using measure method to manually measure item
                       rowVirtualizer.measureElement(el);
                     }
                   }}
                   data-index={virtualRow.index}
                   style={{
                     position: 'absolute',
-                    top: 0,
+                    top: virtualRow.start,
                     left: 0,
                     width: '100%',
-                    transform: `translateY(${virtualRow.start}px)`,
+                    height: virtualRow.size,
                   }}
                   className={
                     item.isDeleted
@@ -466,7 +499,7 @@ const Card: React.FC = () => {
           </div>
         )}
       </div>
-      );
+
       <div>
         <Inputs
           handleOnSubmit={handleOnSubmit}
