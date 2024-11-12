@@ -1,24 +1,20 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { CardContent } from '@/pages/home/main-home-page/components/card/content';
 import { CardHeader } from '@/pages/home/main-home-page/components/card/header';
 import { CardImg } from '@/pages/home/main-home-page/components/card/image';
 import styles from '@/pages/home/main-home-page/components/card/card.module.css';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import Inputs from './country-input/inputs';
+// import { useWindowSize } from 'react-use';
 
 import {
   addCountry,
   deleteCountry,
   getCountries,
-  // getCountriesInfiniteScroll,
-  getSortedCountries,
+  // getSortedCountries,
   updateCountry,
 } from '@/api/countries';
-import {
-  // useInfiniteQuery,
-  useMutation,
-  useQuery,
-} from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
 type Country = {
@@ -38,8 +34,7 @@ type Country = {
 const Card: React.FC = () => {
   const { lang } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const [isSorting, setIsSorting] = useState(false);
+  // const [isSorting, setIsSorting] = useState(false);
   // const [countryData, setCountryData] = useState<Country[]>([]);
   const [displayForm, setDisplayForm] = useState(false);
   const [displaySureDiv, setDisplaySureDiv] = useState(false);
@@ -59,53 +54,42 @@ const Card: React.FC = () => {
   const updateFormRef = useRef<HTMLFormElement | null>(null);
   const virtualizerRef = useRef<HTMLDivElement>(null);
   // Get the sorting parameters from the search params
-  const sortname = searchParams.get('sortname') || 'votes';
-  const sortType = searchParams.get('sortType') || 'asc';
+  const sortName = searchParams.get('sortname') || '';
+  const sortType = searchParams.get('sortType') || '';
 
-  // using useQuery to get all countries I want to show in my project
+  // using useInfiniteQuery to get all countries I want to show in my project (with infinite scroll)
+
   const {
-    data: initialData,
-    isLoading,
-    isError,
+    status,
+    data,
+    error,
+    isFetching,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
     refetch,
-  } = useQuery({
-    queryKey: ['countries-list'],
-    queryFn: getCountries,
-    retry: 0,
-    refetchOnWindowFocus: false,
+  } = useInfiniteQuery({
+    queryKey: ['countries'],
+    queryFn: ({ pageParam }) =>
+      getCountries({ page: pageParam, limit: 10, sortName, sortType }),
+    getNextPageParam: (lastGroup) => lastGroup.nextOffset,
+    initialPageParam: 1,
   });
-  // useInfiniteQuery
-  // const {
-  //   data: initialData,
-  //   status,
-  //   fetchNextPage,
-  //   isFetchingNextPage,
-  //   hasNextPage,
-  //   refetch,
-  // } = useInfiniteQuery({
-  //   queryKey: ['countries-infinite'],
-  //   queryFn: getCountriesInfiniteScroll,
-  //   initialPageParam: 1,
-  //   getNextPageParam: (lastPage, allPages) => {
-  //     // Logic for fetching next page
-  //     return lastPage.length ? allPages.length + 1 : undefined;
-  //   },
+  const allRows = data ? data.pages.flatMap((d) => d.rows) : [];
+
+  // const { data: sortedData, refetch: refetchSort } = useQuery({
+  //   queryKey: ['sorted-countries', sortname, sortType],
+  //   queryFn: () => getSortedCountries(sortname, sortType),
+  //   retry: 0,
+  //   refetchOnWindowFocus: false,
   // });
-
-  // console.log(data);
-  const { data: sortedData, refetch: refetchSort } = useQuery({
-    queryKey: ['sorted-countries', sortname, sortType],
-    queryFn: () => getSortedCountries(sortname, sortType),
-    retry: 0,
-    refetchOnWindowFocus: false,
-  });
-
+  //useMutation for update
   const { mutate: mutateUpdateCountry, isPending: updateCountryIsPending } =
     useMutation({
       mutationFn: updateCountry,
       onSuccess: () => {
         refetch();
-        refetchSort();
+        // refetchSort();
       },
       onError: (error) => {
         console.log(error);
@@ -117,7 +101,7 @@ const Card: React.FC = () => {
       mutationFn: deleteCountry,
       onSuccess: () => {
         refetch();
-        refetchSort();
+        // refetchSort();
       },
       onError: (error) => {
         console.log(error);
@@ -129,7 +113,7 @@ const Card: React.FC = () => {
       mutationFn: addCountry,
       onSuccess: () => {
         refetch();
-        refetchSort();
+        // refetchSort();
       },
       onError: (error) => {
         console.log(error);
@@ -289,34 +273,60 @@ const Card: React.FC = () => {
   };
   // Virtualizer setup
   const rowVirtualizer = useVirtualizer({
-    count: initialData?.length || 0,
-    // count: initialData
-    //   ? initialData.pages.reduce((acc, page) => acc + page.length, 0)
-    //   : 0,
+    count: hasNextPage ? allRows.length + 1 : allRows.length,
     getScrollElement: () => virtualizerRef.current,
     estimateSize: () => 600,
   });
+  // const { width } = useWindowSize();
+  // const rowVirtualizer = useWindowVirtualizer({
+  //   count: hasNextPage ? allRows.length + 1 : allRows.length,
+  //   estimateSize: () => (width <= 768 ? 800 : 348),
+  //   overscan: 5,
+  // });
+
   const virtualItems = rowVirtualizer.getVirtualItems();
+  React.useEffect(() => {
+    const [lastItem] = [...virtualItems].reverse();
+
+    if (!lastItem) {
+      return;
+    }
+
+    if (
+      lastItem.index >= allRows.length - 1 &&
+      hasNextPage &&
+      !isFetchingNextPage
+    ) {
+      fetchNextPage();
+    }
+  }, [
+    hasNextPage,
+    fetchNextPage,
+    allRows.length,
+    isFetchingNextPage,
+    virtualItems,
+  ]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, searchParams]);
   // sort country data
   const sortIncreasing = () => {
     setSearchParams({ sortname: 'votes', sortType: 'asc' });
-    refetchSort();
+    // refetchSort();
     refetch();
-    setIsSorting(true);
+    // setIsSorting(true);
   };
   const sortDecreasing = () => {
     setSearchParams({ sortname: '-votes', sortType: 'desc' });
-    refetchSort();
-    refetch();
-    setIsSorting(true);
+    // refetchSort();
+    // refetch();
+    // setIsSorting(true);
   };
-  // const onScroll = (e) => {
-  //   if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight) {
-  //     if (hasNextPage && !isFetchingNextPage) {
-  //       fetchNextPage();
-  //     }
-  //   }
-  // };
+  const ClearSort = () => {
+    setSearchParams({ sortname: '', sortType: '' });
+    // refetch();
+  };
 
   return (
     <div>
@@ -326,6 +336,9 @@ const Card: React.FC = () => {
         </button>
         <button onClick={sortDecreasing} className={styles.sortBtn}>
           Sort by Votes (Decreasing)
+        </button>
+        <button onClick={ClearSort} className={styles.sortBtn}>
+          Clear Sort
         </button>
       </div>
       <div
@@ -419,13 +432,12 @@ const Card: React.FC = () => {
       <div
         // className={styles['cards-container']}
         ref={virtualizerRef}
-        // onScroll={onScroll}
         style={{ overflow: 'auto', height: '1000px' }}
       >
-        {isLoading ? (
-          <h1>Loading</h1>
-        ) : isError ? (
-          <h1>ERROR 404</h1>
+        {status === 'pending' ? (
+          <p>Loading...</p>
+        ) : status === 'error' ? (
+          <span>Error: {error.message}</span>
         ) : (
           <div
             className={styles['cards-container']}
@@ -436,14 +448,15 @@ const Card: React.FC = () => {
             }}
           >
             {virtualItems.map((virtualRow) => {
-              const item = isSorting
-                ? sortedData?.[virtualRow.index]
-                : (initialData?.[virtualRow.index] as Country);
+              const isLoaderRow = virtualRow.index > allRows.length - 1;
+              // const item = isSorting
+              //   ? sortedData?.[virtualRow.index]
+              const item = allRows?.[virtualRow.index] as Country;
               if (!item) return null;
 
               return (
                 <div
-                  key={item.id}
+                  key={virtualRow.index}
                   ref={(el) => {
                     if (el) {
                       rowVirtualizer.measureElement(el);
@@ -452,10 +465,11 @@ const Card: React.FC = () => {
                   data-index={virtualRow.index}
                   style={{
                     position: 'absolute',
-                    top: virtualRow.start,
+
                     left: 0,
                     width: '100%',
                     height: virtualRow.size,
+                    top: virtualRow.start,
                   }}
                   className={
                     item.isDeleted
@@ -463,44 +477,56 @@ const Card: React.FC = () => {
                       : styles['card-div']
                   }
                 >
-                  <div className={styles['virtual-card-divs']}>
-                    <CardHeader
-                      id={item.id}
-                      votes={item.votes}
-                      refetch={refetch}
-                      // onVote={() => handleVotes(item.id)}
-                    />
-                    <Link to={`/${lang}/country/${item.id}`}>
-                      <CardImg img={item.img} />
-                      <hr />
-                      <CardContent
-                        name={lang === 'eng' ? item.name : item.nameKa}
-                        population={item.population}
-                        capital={lang === 'eng' ? item.capital : item.capitalKa}
+                  {isLoaderRow ? (
+                    hasNextPage ? (
+                      'Loading more...'
+                    ) : (
+                      'Nothing more to load'
+                    )
+                  ) : (
+                    <div className={styles['virtual-card-divs']}>
+                      <CardHeader
+                        id={item.id}
+                        votes={item.votes}
+                        refetch={refetch}
                       />
-                    </Link>
-                    <div>
-                      <button
-                        className={styles['btn']}
-                        onClick={() => handleDeleteBtn(item.id)}
-                      >
-                        {lang === 'eng'
-                          ? `${item.isDeleted ? 'Undo' : 'Delete'}`
-                          : `${item.isDeleted ? 'დაბრუნება' : 'წაშლა'}`}
-                      </button>
-                      <button
-                        className={styles['btn']}
-                        onClick={() => openUpdateForm(item)}
-                      >
-                        {lang === 'eng' ? 'Update' : 'განახლება'}
-                      </button>
+                      <Link to={`/${lang}/country/${item.id}`}>
+                        <CardImg img={item.img} />
+                        <hr />
+                        <CardContent
+                          name={lang === 'eng' ? item.name : item.nameKa}
+                          population={item.population}
+                          capital={
+                            lang === 'eng' ? item.capital : item.capitalKa
+                          }
+                        />
+                      </Link>
+                      <div>
+                        <button
+                          className={styles['btn']}
+                          onClick={() => handleDeleteBtn(item.id)}
+                        >
+                          {lang === 'eng'
+                            ? `${item.isDeleted ? 'Undo' : 'Delete'}`
+                            : `${item.isDeleted ? 'დაბრუნება' : 'წაშლა'}`}
+                        </button>
+                        <button
+                          className={styles['btn']}
+                          onClick={() => openUpdateForm(item)}
+                        >
+                          {lang === 'eng' ? 'Update' : 'განახლება'}
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               );
             })}
           </div>
         )}
+        <div>
+          {isFetching && !isFetchingNextPage ? 'Background Updating...' : null}
+        </div>
       </div>
 
       <div>

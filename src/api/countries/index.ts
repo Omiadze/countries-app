@@ -18,48 +18,87 @@ type AddCountryResponse = Country;
 type UpdateCountryResponse = Country;
 type DeleteCountryResponse = Country;
 
-export const getCountries = async (): Promise<
-  GetCountriesResponse | undefined
-> => {
+// export const getCountries = async (): Promise<
+//   GetCountriesResponse | undefined
+// > => {
+//   try {
+//     const result = await httpClient.get<GetCountriesResponse>('/countries');
+//     return result.data;
+//   } catch (error) {
+//     console.log('Error:', error);
+//     throw new Error('Failed to fetch countries');
+//   }
+// };
+
+// function getNextPageNumber(relType: string, pagination: string) {
+//   const regex = new RegExp(`<[^>]*[?&]_page=(\\d+)[^>]*>; rel="${relType}"`);
+//   const match = pagination.match(regex);
+//   return match ? parseInt(match[1], 10) : null;
+// }
+
+// export const getCountries = async ({
+//   page,
+//   limit,
+// }: {
+//   page: number;
+//   limit: number;
+// }) => {
+//   try {
+//     const res = await httpClient.get<GetCountriesResponse>(
+//       `/countries?_page=${page}&_limit=${limit}`
+//     );
+//     return {
+//       rows: res.data,
+//       nextOffset: res.data.length === limit ? page + 1 : null,
+//     };
+//   } catch (error) {
+//     console.error(error);
+//     throw error;
+//   }
+// };
+
+// export const getSortedCountries = async (
+//   name: string,
+//   type: string
+// ): Promise<GetCountriesResponse | undefined> => {
+//   try {
+//     const result = await httpClient.get<GetCountriesResponse>(
+//       `/countries?_sort=${name}&_order=${type}`
+//     );
+//     return result.data;
+//   } catch (error) {
+//     console.error('Error fetching sorted countries:', error);
+
+//     throw new Error('Failed to fetch sorted countries');
+//   }
+// };
+
+export const getCountries = async ({
+  page,
+  limit,
+  sortName = 'votes', // Default sorting field
+  sortType = 'asc', // Default sorting order
+}: {
+  page: number;
+  limit: number;
+  sortName?: string;
+  sortType?: string;
+}) => {
   try {
-    const result = await httpClient.get<GetCountriesResponse>('/countries');
-    return result.data;
+    const queryString = `/countries?_page=${page}&_limit=${limit}&_sort=${sortName}&_order=${sortType}`;
+
+    const res = await httpClient.get<GetCountriesResponse>(queryString);
+
+    return {
+      rows: res.data,
+      nextOffset: res.data.length === limit ? page + 1 : null,
+    };
   } catch (error) {
-    console.log('Error:', error);
+    console.error('Error fetching countries:', error);
     throw new Error('Failed to fetch countries');
   }
 };
 
-export const getSortedCountries = async (
-  name: string,
-  type: string
-): Promise<GetCountriesResponse | undefined> => {
-  try {
-    const result = await httpClient.get<GetCountriesResponse>(
-      `/countries?_sort=${name}&_order=${type}`
-    );
-    return result.data;
-  } catch (error) {
-    console.error('Error fetching sorted countries:', error);
-
-    throw new Error('Failed to fetch sorted countries');
-  }
-};
-
-// export const getCountriesInfiniteScroll = async ({
-//   pageParam,
-// }: {
-//   pageParam: number;
-// }) => {
-//   try {
-//     const result = await httpClient.get(
-//       `/countries?_page=${pageParam}$_limit=20`
-//     );
-//     return result.data;
-//   } catch (error) {
-//     console.log('Error:', error);
-//   }
-// };
 export const getCountryWithId = async (
   id: string
 ): Promise<Country | undefined> => {
