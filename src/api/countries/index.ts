@@ -91,7 +91,7 @@ export const getCountries = async ({
 
     return {
       rows: res.data,
-      nextOffset: res.data.length === limit ? page + 1 : null,
+      nextOffset: res.data.length == limit ? page + 1 : null,
     };
   } catch (error) {
     console.error('Error fetching countries:', error);

@@ -40,6 +40,7 @@ export const Header: React.FC<Props> = ({
             {item}
           </NavLink>
         ))} */}
+
         <NavLink
           to={`${nav[0].toLowerCase()}`}
           className={({ isActive }) => (isActive ? styles.active : undefined)}

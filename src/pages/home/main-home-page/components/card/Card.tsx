@@ -75,7 +75,9 @@ const Card: React.FC = () => {
     getNextPageParam: (lastGroup) => lastGroup.nextOffset,
     initialPageParam: 1,
   });
+
   const allRows = data ? data.pages.flatMap((d) => d.rows) : [];
+  console.log(allRows);
 
   // const { data: sortedData, refetch: refetchSort } = useQuery({
   //   queryKey: ['sorted-countries', sortname, sortType],
