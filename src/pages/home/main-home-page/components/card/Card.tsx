@@ -77,7 +77,6 @@ const Card: React.FC = () => {
   });
 
   const allRows = data ? data.pages.flatMap((d) => d.rows) : [];
-  console.log(allRows);
 
   // const { data: sortedData, refetch: refetchSort } = useQuery({
   //   queryKey: ['sorted-countries', sortname, sortType],
@@ -453,18 +452,18 @@ const Card: React.FC = () => {
               const isLoaderRow = virtualRow.index > allRows.length - 1;
               // const item = isSorting
               //   ? sortedData?.[virtualRow.index]
-              const item = allRows?.[virtualRow.index] as Country;
+              const item = allRows?.[virtualRow.index] as unknown as Country;
               if (!item) return null;
 
               return (
                 <div
                   key={virtualRow.index}
-                  ref={(el) => {
-                    if (el) {
-                      rowVirtualizer.measureElement(el);
-                    }
-                  }}
-                  data-index={virtualRow.index}
+                  // ref={(el) => {
+                  //   if (el) {
+                  //     rowVirtualizer.measureElement(el);
+                  //   }
+                  // }}
+                  // data-index={virtualRow.index}
                   style={{
                     position: 'absolute',
 

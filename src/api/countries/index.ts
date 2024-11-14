@@ -13,7 +13,7 @@ type Country = {
   capitalKa: string;
 };
 
-type GetCountriesResponse = Country[];
+// type GetCountriesResponse = Country[];
 type AddCountryResponse = Country;
 type UpdateCountryResponse = Country;
 type DeleteCountryResponse = Country;
@@ -76,8 +76,8 @@ type DeleteCountryResponse = Country;
 export const getCountries = async ({
   page,
   limit,
-  sortName = 'votes', // Default sorting field
-  sortType = 'asc', // Default sorting order
+  sortName = 'votes',
+  sortType = 'asc',
 }: {
   page: number;
   limit: number;
@@ -85,13 +85,15 @@ export const getCountries = async ({
   sortType?: string;
 }) => {
   try {
-    const queryString = `/countries?_page=${page}&_limit=${limit}&_sort=${sortName}&_order=${sortType}`;
+    const queryString = `/countries?_page=${page}&_per_page=${limit}&_sort=${sortName}&_order=${sortType}`;
 
-    const res = await httpClient.get<GetCountriesResponse>(queryString);
+    const res = await httpClient.get<{ data: number; next: number }>(
+      queryString
+    );
 
     return {
-      rows: res.data,
-      nextOffset: res.data.length == limit ? page + 1 : null,
+      rows: res.data.data,
+      nextOffset: res.data.next,
     };
   } catch (error) {
     console.error('Error fetching countries:', error);
